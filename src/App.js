@@ -40,6 +40,7 @@ const App = () => {
 				<Client id='client' go={go} />
 				<Сourier id='courier' go={go} />
 				<Business id='business' go={go} />
+				<Test go={go} />
 			</View>
 	);
 }
