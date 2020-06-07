@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { platform, IOS } from '@vkontakte/vkui';
+import { platform, IOS, ANDROID } from '@vkontakte/vkui';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Header from '@vkontakte/vkui/dist/components/Header/Header';
@@ -18,23 +18,26 @@ import './Client.css';
 
 const osName = platform();
 
+var miniPanel;
+if (osName !== IOS || osName !== ANDROID) {
+	miniPanel=<React.Fragment>
+		  <PanelHeaderButton><Icon24Search /></PanelHeaderButton>
+		  <PanelHeaderButton><Icon24SettingsOutline /></PanelHeaderButton>
+		  <PanelHeaderButton><Icon24Notifications /></PanelHeaderButton>
+		</React.Fragment>
+}
+
 const Client = props => (
 	<Panel id={props.id}>
 		<PanelHeader
 			left={<PanelHeaderButton onClick={props.go} data-to="home">
 				{osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
 			</PanelHeaderButton>}
-			right={
-				<React.Fragment>
-				  <PanelHeaderButton><Icon24Search /></PanelHeaderButton>
-				  <PanelHeaderButton><Icon24SettingsOutline /></PanelHeaderButton>
-				  <PanelHeaderButton><Icon24Notifications /></PanelHeaderButton>
-				</React.Fragment>
-			}
+			right={miniPanel}
 		>
 			Клиент
 		</PanelHeader>
-		<Group header={<Header mode="secondary">Мои заказы</Header>}>
+		<Group header={<Header>Мои активные заказы</Header>}>
 			<RichCell
 				disabled
 				multiline
@@ -49,9 +52,24 @@ const Client = props => (
 				</React.Fragment>
 				}
 				>
-				№322356      	
-				</RichCell>
-			>
+				№322356
+			</RichCell>
+			<RichCell
+				disabled
+				multiline
+				before={<Avatar size={72}  />} // src={getAvatarUrl('user_ti')}
+				text='Магазин "Автозапчасти"'
+				caption="05.06.2020"
+				after="Отправлен"
+				actions={
+				<React.Fragment>
+					<Button>Курьер на карте</Button>
+					<Button>Чат с курьером</Button>
+				</React.Fragment>
+				}
+				>
+				№789-7890      	
+			</RichCell>
 		</Group>
 	</Panel>
 );
