@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { platform, IOS } from '@vkontakte/vkui';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
+import Header from '@vkontakte/vkui/dist/components/Header/Header';
+import Group from '@vkontakte/vkui/dist/components/Group/Group';
+import { RichCell, Button, Avatar } from '@vkontakte/vkui';
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
@@ -31,7 +34,25 @@ const Client = props => (
 		>
 			Клиент
 		</PanelHeader>
-		<img className="Client" src={persik} alt="Persik The Cat"/>
+		<Group header={<Header mode="secondary">Мои заказы</Header>}>
+			<RichCell
+				disabled
+				multiline
+				before={<Avatar size={72}  />} // src={getAvatarUrl('user_ti')}
+				text='Магазин "Развивающие игрушки"'
+				caption="03.06.2020"
+				after="Отправлен"
+				actions={
+				<React.Fragment>
+					<Button>Курьер на карте</Button>
+					<Button>Чат с курьером</Button>
+				</React.Fragment>
+				}
+				>
+				№322356      	
+				</RichCell>
+			>
+		</Group>
 	</Panel>
 );
 
