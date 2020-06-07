@@ -14,7 +14,7 @@ import persik from '../img/persik.png';
 
 const osName = platform();
 
-const Client = props => (
+const Test = props => (
 	<Panel id={props.id}>
 		<PanelHeader
 			left={<PanelHeaderButton onClick={props.go} data-to="home">
@@ -36,9 +36,9 @@ const Client = props => (
 	</Panel>
 );
 
-Client.propTypes = {
+Test.propTypes = {
 	id: PropTypes.string.isRequired,
 	go: PropTypes.func.isRequired,
 };
 
-export default Client;
+export default Test;

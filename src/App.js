@@ -8,6 +8,7 @@ import Home from './panels/Home';
 import Client from './panels/Client';
 import Сourier from './panels/Сourier';
 import Business from './panels/Business';
+import Test from './panels/Test'
 
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
