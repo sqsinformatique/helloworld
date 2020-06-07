@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/helloworld/static/css/main.8cb40fdb.chunk.css",
-    "main.js": "/helloworld/static/js/main.70f15acf.chunk.js",
-    "main.js.map": "/helloworld/static/js/main.70f15acf.chunk.js.map",
+    "main.js": "/helloworld/static/js/main.99bbbc98.chunk.js",
+    "main.js.map": "/helloworld/static/js/main.99bbbc98.chunk.js.map",
     "runtime-main.js": "/helloworld/static/js/runtime-main.1d336961.js",
     "runtime-main.js.map": "/helloworld/static/js/runtime-main.1d336961.js.map",
     "static/css/2.ad8c1e94.chunk.css": "/helloworld/static/css/2.ad8c1e94.chunk.css",
     "static/js/2.2fb254f7.chunk.js": "/helloworld/static/js/2.2fb254f7.chunk.js",
     "static/js/2.2fb254f7.chunk.js.map": "/helloworld/static/js/2.2fb254f7.chunk.js.map",
     "index.html": "/helloworld/index.html",
-    "precache-manifest.0f6081b44d7c64e6c5e971b654b3559b.js": "/helloworld/precache-manifest.0f6081b44d7c64e6c5e971b654b3559b.js",
+    "precache-manifest.6d5d1fd446642aa7e471bca348b1039e.js": "/helloworld/precache-manifest.6d5d1fd446642aa7e471bca348b1039e.js",
     "service-worker.js": "/helloworld/service-worker.js",
     "static/css/2.ad8c1e94.chunk.css.map": "/helloworld/static/css/2.ad8c1e94.chunk.css.map",
     "static/css/main.8cb40fdb.chunk.css.map": "/helloworld/static/css/main.8cb40fdb.chunk.css.map",
@@ -21,6 +21,6 @@
     "static/css/2.ad8c1e94.chunk.css",
     "static/js/2.2fb254f7.chunk.js",
     "static/css/main.8cb40fdb.chunk.css",
-    "static/js/main.70f15acf.chunk.js"
+    "static/js/main.99bbbc98.chunk.js"
   ]
 }
