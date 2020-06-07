@@ -34,6 +34,9 @@ const Home = ({ id, go, fetchedUser }) => (
 				<Cell expandable before={<Icon28CubeBoxOutline/>} onClick={go} data-to="business">
 					Я бизнес
 				</Cell>
+				<Cell expandable before={<Icon28CubeBoxOutline/>} onClick={go} data-to="test">
+					Тест
+				</Cell>
 			</Div>
 		</Group>
 	</Panel>
