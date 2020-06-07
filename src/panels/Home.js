@@ -2,15 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
-import Button from '@vkontakte/vkui/dist/components/Button/Button';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 import Cell from '@vkontakte/vkui/dist/components/Cell/Cell';
 import Div from '@vkontakte/vkui/dist/components/Div/Div';
 import Avatar from '@vkontakte/vkui/dist/components/Avatar/Avatar';
+import Icon28UserOutline from '@vkontakte/icons/dist/28/user_outline'
+import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
+import Icon28CubeBoxOutline from '@vkontakte/icons/dist/28/cube_box_outline'
 
 const Home = ({ id, go, fetchedUser }) => (
 	<Panel id={id}>
-		<PanelHeader>Example</PanelHeader>
+		<PanelHeader>Где курьер?</PanelHeader>
 		{fetchedUser &&
 		<Group title="User Data Fetched with VK Bridge">
 			<Cell
@@ -23,9 +25,15 @@ const Home = ({ id, go, fetchedUser }) => (
 
 		<Group title="Navigation Example">
 			<Div>
-				<Button size="xl" level="2" onClick={go} data-to="persik">
-					Show me the Persik, please
-				</Button>
+				<Cell expandable before={<Icon28UserOutline/>} onClick={go} data-to="client">
+					Я клиент
+				</Cell>
+				<Cell expandable before={<Icon28MarketOutline/>} onClick={go} data-to="courier">
+					Я курьер
+				</Cell>
+				<Cell expandable before={<Icon28CubeBoxOutline/>} onClick={go} data-to="business">
+					Я бизнес
+				</Cell>
 			</Div>
 		</Group>
 	</Panel>
