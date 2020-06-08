@@ -99,24 +99,24 @@ class GeodataClient extends React.Component {
                     </PanelHeaderButton>}
                 // right={miniPanel}
                 >
-                    {this.state.shop}
+                    {props.order.shop}
                 </PanelHeader>
                 <RichCell
                     disabled
                     multiline
                     before={<Avatar size={72} />} // src={getAvatarUrl('user_ti')}
                     text=''
-                    caption={this.state.date}
-                    after={this.state.state}
+                    caption={props.order.date}
+                    after={props.order.state}
                     actions={
                         <React.Fragment>
                             <Button>Чат с курьером</Button>
                         </React.Fragment>
                     }
                 >
-                    {this.state.number}
+                    {props.order.number}
                 </RichCell>
-                {geoMap("Москва, Братиславская ул, 31к1", this.state.geodata)}
+                {geoMap(props.order.target, this.state.geodata)}
             </Panel>
         )
     }

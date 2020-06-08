@@ -78,7 +78,7 @@ class Client extends React.Component {
 							after={order.state}
 							actions={
 								<React.Fragment>
-									<Button onClick={(e) => props.go(e, { "test": "test" })} data-to="view_where_courier">Курьер на карте</Button>
+									<Button onClick={(e) => props.go(e, order)} data-to="view_where_courier">Курьер на карте</Button>
 									<Button>Чат с курьером</Button>
 								</React.Fragment>
 							}

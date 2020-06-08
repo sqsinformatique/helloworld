@@ -26,6 +26,7 @@ class App extends React.Component {
 			fetchedUser: null,
 			popout: <ScreenSpinner size='large' />,
 			activeStory: 'main',
+			order: null,
 		};
 
 		this.onStoryChange = this.onStoryChange.bind(this);
@@ -49,8 +50,10 @@ class App extends React.Component {
 	}
 
 	go = (e, object) => {
-		console.log(object)
 		const route = e.currentTarget.dataset.to;
+		if (route === 'view_where_courier') {
+			this.setState({ order: object })
+		}
 		this.setState({ activePanel: route })
 		this.setLocation(route)
 	};
@@ -78,7 +81,7 @@ class App extends React.Component {
 					<Client id='client' data={this.state.data} go={this.go} />
 					<Сourier id='courier' go={this.go} />
 					<Business id='business' go={this.go} />
-					<GeodataClient id='view_where_courier' go={this.go} />
+					<GeodataClient id='view_where_courier' order={this.state.order} go={this.go} />
 				</View>
 			</Epic>
 		);
