@@ -33,8 +33,6 @@ function geoMap(clientGeodata, courierGeodata) {
 
     return <YMaps query={{ apikey: '482da132-c4be-476f-95ef-79ba61d579a4', load: 'control.ZoomControl' }} >
         <Map width="100vw" height="100vh" defaultState={mapState} className='mapview' >
-            {/* <Placemark geometry={[55.684758, 37.738521]} /> */}
-            {/* `${userGeodata.lat} +','+ ${userGeodata.long} */}
             <RoutePanel
                 instanceRef={ref => {
                     if (ref) {
@@ -64,7 +62,7 @@ function geoMap(clientGeodata, courierGeodata) {
     </YMaps>
 }
 
-class GeodataClient extends React.Component {
+class GeodataCourier extends React.Component {
     constructor(props) {
         super(props);
 
@@ -80,18 +78,29 @@ class GeodataClient extends React.Component {
 
     async componentDidMount() {
         const props = this.props;
-        this.setState({ courier_id: props.order.courier_id})
+        this.setState({ courier_id: props.order.courier_id })
 
-        // возвращаем с бека координаты курьера
-        // пока заглушка
-        this.setState({ courier_geodata: { lat: 55.659200, long: 37.753314 } })
+        // получаем координаты курьера
         // const geodata = await bridge.send('VKWebAppGetGeodata');
-        // this.setState({ geodata: geodata });
+        // this.setState({ courier_geodata: geodata });
+
+        // пока заглушка
+        this.setState({
+            courier_geodata: {
+                lat: 55.659200,
+                long: 37.753314
+            }
+        })
+
+        // отправляем координаты курьера на бек
     }
 
     async fetchCourierGeo() {
         if (this.state.courier_id > 0) {
-            // возвращаем с бека координаты курьера
+            // получаем координаты курьера
+            // const geodata = await bridge.send('VKWebAppGetGeodata');
+            // this.setState({ courier_geodata: geodata });
+
             // пока заглушка
             this.setState({
                 courier_geodata: {
@@ -99,6 +108,8 @@ class GeodataClient extends React.Component {
                     long: this.state.courier_geodata.long + 0.00001
                 }
             })
+
+            // отправляем координаты курьера на бек
         }
     }
 
@@ -107,7 +118,7 @@ class GeodataClient extends React.Component {
         return (
             <Panel id={props.id}>
                 <PanelHeader
-                    left={<PanelHeaderButton onClick={this.props.go} data-to="client">
+                    left={<PanelHeaderButton onClick={this.props.go} data-to="courier">
                         {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
                     </PanelHeaderButton>}
                 // right={miniPanel}
@@ -123,7 +134,7 @@ class GeodataClient extends React.Component {
                     after={props.order.state}
                     actions={
                         <React.Fragment>
-                            <Button>Чат с курьером</Button>
+                            <Button>Чат с клиентом</Button>
                         </React.Fragment>
                     }
                 >
@@ -135,10 +146,10 @@ class GeodataClient extends React.Component {
     }
 }
 
-GeodataClient.propTypes = {
+GeodataCourier.propTypes = {
     id: PropTypes.string.isRequired,
     go: PropTypes.func.isRequired
 };
 
 
-export default GeodataClient;
+export default GeodataCourier;

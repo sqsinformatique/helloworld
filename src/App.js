@@ -14,6 +14,7 @@ import Client from './panels/Client';
 import Сourier from './panels/Сourier';
 import Business from './panels/Business';
 import GeodataClient from './panels/Geodata';
+import GeodataCourier from './panels/CourierGeodata';
 
 const location = window.location.hash.substr(1);
 
@@ -26,7 +27,8 @@ class App extends React.Component {
 			fetchedUser: null,
 			popout: <ScreenSpinner size='large' />,
 			activeStory: 'main',
-			order: null,
+			client_order: null,
+			courier_order: null,
 		};
 
 		this.onStoryChange = this.onStoryChange.bind(this);
@@ -52,8 +54,12 @@ class App extends React.Component {
 	go = (e, object) => {
 		const route = e.currentTarget.dataset.to;
 		if (route === 'view_where_courier') {
-			this.setState({ order: object })
+			this.setState({ client_order: object })
 		}
+		if (route === 'view_where_client') {
+			this.setState({ courier_order: object })
+		}
+
 		this.setState({ activePanel: route })
 		this.setLocation(route)
 	};
@@ -81,7 +87,8 @@ class App extends React.Component {
 					<Client id='client' data={this.state.data} go={this.go} />
 					<Сourier id='courier' go={this.go} />
 					<Business id='business' go={this.go} />
-					<GeodataClient id='view_where_courier' order={this.state.order} go={this.go} />
+					<GeodataClient id='view_where_courier' order={this.state.client_order} go={this.go} />
+					<GeodataCourier id='view_where_client' order={this.state.courier_order} go={this.go} />
 				</View>
 			</Epic>
 		);
