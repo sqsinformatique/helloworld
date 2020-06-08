@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f29fe23e563c711381255e26a6e8d35d",
+    "revision": "2b7e03c584c0619e86170e78739b7abc",
     "url": "/helloworld/index.html"
   },
   {
-    "revision": "57424c01b72fa989de03",
+    "revision": "eb93101fc2bbfb00b043",
     "url": "/helloworld/static/css/2.ad8c1e94.chunk.css"
   },
   {
-    "revision": "43c0a9b6167d20151a5a",
+    "revision": "ccb01c4710088e97b9c6",
     "url": "/helloworld/static/css/main.8cb40fdb.chunk.css"
   },
   {
-    "revision": "57424c01b72fa989de03",
-    "url": "/helloworld/static/js/2.6aede089.chunk.js"
+    "revision": "eb93101fc2bbfb00b043",
+    "url": "/helloworld/static/js/2.92a4bace.chunk.js"
   },
   {
     "revision": "e88a3e95b5364d46e95b35ae8c0dc27d",
-    "url": "/helloworld/static/js/2.6aede089.chunk.js.LICENSE.txt"
+    "url": "/helloworld/static/js/2.92a4bace.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "43c0a9b6167d20151a5a",
-    "url": "/helloworld/static/js/main.4233d785.chunk.js"
+    "revision": "ccb01c4710088e97b9c6",
+    "url": "/helloworld/static/js/main.d1000e7e.chunk.js"
   },
   {
     "revision": "430ef0e9846e44743734",
