@@ -23,7 +23,7 @@ const Сourier = props => (
       >
         Курьер
       </PanelHeader>
-      <Group header={<Header>Мои активные заказы</Header>}>
+      <Group header={<Header>Я доставляю</Header>}>
 			<RichCell
 				disabled
 				multiline

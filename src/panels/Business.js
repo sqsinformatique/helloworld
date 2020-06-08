@@ -23,7 +23,7 @@ const Business = props => (
 		>
 			Бизнес
 		</PanelHeader>
-		<Group header={<Header>Заказы</Header>}>
+		<Group header={<Header>У курьера</Header>}>
 			<RichCell
 				disabled
 				multiline

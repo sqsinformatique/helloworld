@@ -9,6 +9,7 @@ import Home from './panels/Home';
 import Client from './panels/Client';
 import Сourier from './panels/Сourier';
 import Business from './panels/Business';
+import Geodata from './panels/Geodata';
 
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
@@ -41,6 +42,7 @@ const App = () => {
 				<Client id='client' go={go} />
 				<Сourier id='courier' go={go} />
 				<Business id='business' go={go} />
+				<Geodata id='view_where_courier' go={go} title='Магазин "Развивающие игрушки"' delivery_date="03.06.2020" delivery_state="Везут"/>
 			</View>
 	);
 }
