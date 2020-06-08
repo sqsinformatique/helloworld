@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Panel, PanelHeader, PanelHeaderButton, platform, IOS } from '@vkontakte/vkui';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
-import Geodata from './Geodata'
+import GeodataClient from './Geodata'
 import Header from '@vkontakte/vkui/dist/components/Header/Header';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 import { RichCell, Button, Avatar } from '@vkontakte/vkui';

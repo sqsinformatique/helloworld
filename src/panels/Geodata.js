@@ -14,7 +14,22 @@ const mapState = { center: [55.751574, 37.573856], zoom: 9, controls: ['zoomCont
 
 const osName = platform();
 
-function geoMap(userGeodata) {
+function geoMap(clientGeodata, courierGeodata) {
+    var client
+    var courier
+    if (typeof clientGeodata === 'object') {
+        client = clientGeodata.lat + "," + clientGeodata.long
+    } else {
+        client = clientGeodata
+    }
+
+    if (typeof courierGeodata === 'object') {
+        courier = courierGeodata.lat + "," + courierGeodata.long
+    } else {
+        courier = courierGeodata
+    }
+
+
     return <YMaps query={{ apikey: '482da132-c4be-476f-95ef-79ba61d579a4', load: 'control.ZoomControl' }} >
         <Map width="100vw" height="100vh" defaultState={mapState} className='mapview' >
             {/* <Placemark geometry={[55.684758, 37.738521]} /> */}
@@ -25,8 +40,8 @@ function geoMap(userGeodata) {
                         ref.routePanel.state.set({
                             fromEnabled: false,
                             type: 'masstransit',
-                            from: userGeodata.lat + "," + userGeodata.long,
-                            to: "Москва, метро Братиславская",
+                            from: courier,
+                            to: client,
                             toEnabled: false,
                         });
                         ref.routePanel.options.set({
@@ -48,98 +63,69 @@ function geoMap(userGeodata) {
     </YMaps>
 }
 
-const Geodata = props => (
-    <Panel id={props.id}>
-        <PanelHeader
-            left={<PanelHeaderButton onClick={props.go} data-to="courier">
-                {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
-            </PanelHeaderButton>}
-        // right={miniPanel}
-        >
-            {props.title}
-        </PanelHeader>
-        <RichCell
-            disabled
-            multiline
-            before={<Avatar size={72} />} // src={getAvatarUrl('user_ti')}
-            text={props.shop_name}
-            caption={props.delivery_date}
-            after={props.delivery_state}
-            actions={
-                <React.Fragment>
-                    <Button>Чат с курьером</Button>
-                </React.Fragment>
-            }
-        >
-            №322356
-		</RichCell>
-        {geoMap(bridge.send('VKWebAppGetGeodata'))}
-    </Panel>
-)
+class GeodataClient extends React.Component {
+    constructor(props) {
+        super(props);
 
-// const Geodata = () => {
-//     const [seconds, setSeconds] = useState(0);
-//     const [isActive, setIsActive] = useState(false);
-//     const [userGeodata, setGeodata] = useState({ lat: 0, long: 0 });
+        this.state = {
+            shop: 'unknown shop',
+            date: '01.01.1970',
+            state: 'unknown',
+            number: '-1',
+            target: 'unknown',
+            geodata: { lat: 37.609218, long: 55.753559 }, // центр Москвы :)
+        };
 
-//     function toggle() {
-//         setIsActive(!isActive);
-//     }
+        this.state.geoUpdateInterval = setInterval(() => {
+            // const geodata = bridge.send('VKWebAppGetGeodata');
+            // this.setState({ geodata: geodata });
+            console.log(this.state.geodata)
+            this.setState({ geodata: { lat: this.state.geodata.lat + 0.00001, long: this.state.geodata.long + 0.00001 } })
+        }, 5000);
+    }
 
-//     function reset() {
-//         setSeconds(0);
-//         setIsActive(false);
-//     }
+    async componentDidMount() {
+        const geodata = await bridge.send('VKWebAppGetGeodata');
+        this.setState({ geodata: geodata });
+    }
 
-//     async function fetchGeoData() {
-//         const geodata = await bridge.send('VKWebAppGetGeodata');
-//         setGeodata(geodata);
-//     }
+    render() {
+        const props = this.props;
+        return (
+            <Panel id={props.id}>
+                <PanelHeader
+                    left={<PanelHeaderButton onClick={this.props.go} data-to="client">
+                        {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
+                    </PanelHeaderButton>}
+                // right={miniPanel}
+                >
+                    {this.state.shop}
+                </PanelHeader>
+                <RichCell
+                    disabled
+                    multiline
+                    before={<Avatar size={72} />} // src={getAvatarUrl('user_ti')}
+                    text=''
+                    caption={this.state.date}
+                    after={this.state.state}
+                    actions={
+                        <React.Fragment>
+                            <Button>Чат с курьером</Button>
+                        </React.Fragment>
+                    }
+                >
+                    {this.state.number}
+                </RichCell>
+                {geoMap("Москва, Братиславская ул, 31к1", this.state.geodata)}
+            </Panel>
+        )
+    }
+}
 
-//     useEffect(() => {
-//         fetchGeoData();
-//         let interval = null;
-//         if (isActive) {
-//             interval = setInterval(() => {
-//                 setSeconds(seconds => seconds + 5);
-//                 fetchGeoData();
-//             }, 5000);
-//         } else if (!isActive && seconds !== 0) {
-//             clearInterval(interval);
-//         }
-//         return () => clearInterval(interval);
-//     }, [isActive, seconds]);
-
-//     return (
-//         <Panel id="geodata">
-//             <div className="app">
-//                 <div className="time">
-//                     {seconds}s geodata {userGeodata.lat}; {userGeodata.long}
-//                     <button className={`button button-primary button-primary-${isActive ? 'active' : 'inactive'}`} onClick={toggle}>
-//                         {isActive ? 'Pause' : 'Start'}
-//                     </button>
-//                     <button className="button" onClick={reset}>
-//                         Reset
-//                     </button>
-//                 </div>
-//                 <div className="row">
-//                     {geoMap(userGeodata)}
-//                 </div>
-//             </div>
-
-//         </Panel>
-//     );
-// };
-
-Geodata.propTypes = {
+GeodataClient.propTypes = {
     id: PropTypes.string.isRequired,
-    return: PropTypes.string.isRequired,
-    go: PropTypes.func.isRequired,
-    title: PropTypes.string.isRequired,
-    shop_name: PropTypes.string.isRequired,
-    delivery_date: PropTypes.string.isRequired,
-    delivery_state: PropTypes.string.isRequired
+    go: PropTypes.func.isRequired
 };
 
 
-export default Geodata;
+export default GeodataClient;
