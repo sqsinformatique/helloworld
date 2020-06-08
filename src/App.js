@@ -4,14 +4,11 @@ import {View } from '@vkontakte/vkui';
 import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import '@vkontakte/vkui/dist/vkui.css';
 
-import { platform, IOS } from '@vkontakte/vkui';
-
 
 import Home from './panels/Home';
 import Client from './panels/Client';
 import Сourier from './panels/Сourier';
 import Business from './panels/Business';
-import Test from './panels/Test'
 
 const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
@@ -44,7 +41,6 @@ const App = () => {
 				<Client id='client' go={go} />
 				<Сourier id='courier' go={go} />
 				<Business id='business' go={go} />
-				<Test id='test' go={go} />
 			</View>
 	);
 }

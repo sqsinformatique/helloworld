@@ -4,6 +4,9 @@ import { Panel, PanelHeader, PanelHeaderButton, platform, IOS } from '@vkontakte
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 import Geodata from './Geodata'
+import Header from '@vkontakte/vkui/dist/components/Header/Header';
+import Group from '@vkontakte/vkui/dist/components/Group/Group';
+import { RichCell, Button, Avatar } from '@vkontakte/vkui';
 
 import './Сourier.css';
 
@@ -18,9 +21,41 @@ const Сourier = props => (
           </PanelHeaderButton>
         }
       >
-        Карта
-      </PanelHeader>	
-      <Geodata/> 
+        Курьер
+      </PanelHeader>
+      <Group header={<Header>Мои активные заказы</Header>}>
+			<RichCell
+				disabled
+				multiline
+				before={<Avatar size={72}  />} // src={getAvatarUrl('user_ti')}
+				text='Магазин "Развивающие игрушки"'
+				caption="03.06.2020"
+				actions={
+				<React.Fragment>
+					<Button>Адрес на карте</Button>
+					<Button>Чат с клиентом</Button>
+				</React.Fragment>
+				}
+				>
+				№322356
+			</RichCell>
+			<RichCell
+				disabled
+				multiline
+				before={<Avatar size={72}  />} // src={getAvatarUrl('user_ti')}
+				text='Магазин "Автозапчасти"'
+				caption="05.06.2020"
+				actions={
+				<React.Fragment>
+					<Button>Адрес на карте</Button>
+					<Button>Чат с клиентом</Button>
+				</React.Fragment>
+				}
+				>
+				№789-7890      	
+			</RichCell>
+		</Group>	
+      {/* <Geodata/>  */}
     </Panel>
   );
   

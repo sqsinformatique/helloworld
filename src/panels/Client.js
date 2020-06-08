@@ -51,6 +51,7 @@ const Client = props => (
 					<Button>Чат с курьером</Button>
 				</React.Fragment>
 				}
+				onClick={go} data-to="business"
 				>
 				№322356
 			</RichCell>
