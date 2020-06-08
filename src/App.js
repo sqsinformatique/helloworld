@@ -15,6 +15,7 @@ import Сourier from './panels/Сourier';
 import Business from './panels/Business';
 import GeodataClient from './panels/Geodata';
 import GeodataCourier from './panels/CourierGeodata';
+import GeodataBusiness from './panels/BusinessGeodata';
 
 const location = window.location.hash.substr(1);
 
@@ -29,6 +30,7 @@ class App extends React.Component {
 			activeStory: 'main',
 			client_order: null,
 			courier_order: null,
+			client_order_for_business: null,
 		};
 
 		this.onStoryChange = this.onStoryChange.bind(this);
@@ -58,6 +60,9 @@ class App extends React.Component {
 		}
 		if (route === 'view_where_client') {
 			this.setState({ courier_order: object })
+		}
+		if (route === 'view_where_courier_for_business') {
+			this.setState({ client_order_for_business: object })
 		}
 
 		this.setState({ activePanel: route })
@@ -89,6 +94,7 @@ class App extends React.Component {
 					<Business id='business' go={this.go} />
 					<GeodataClient id='view_where_courier' order={this.state.client_order} go={this.go} />
 					<GeodataCourier id='view_where_client' order={this.state.courier_order} go={this.go} />
+					<GeodataBusiness id='view_where_courier_for_business' order={this.state.client_order_for_business} go={this.go} />
 				</View>
 			</Epic>
 		);

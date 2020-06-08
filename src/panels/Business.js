@@ -14,51 +14,75 @@ import './Business.css';
 
 const osName = platform();
 
-const Business = props => (
-	<Panel id={props.id}>
-		<PanelHeader
-			left={<PanelHeaderButton onClick={props.go} data-to="home">
-				{osName === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
-			</PanelHeaderButton>}
-		>
-			Бизнес
-		</PanelHeader>
-		<Group header={<Header>У курьера</Header>}>
-			<RichCell
-				disabled
-				multiline
-				before={<Avatar size={72}  />} // src={getAvatarUrl('user_ti')}
-				text='Курьер Иванов Виктор'
-				caption="03.06.2020"
-				after="Отправлен"
-				actions={
-				<React.Fragment>
-					<Button>Курьер на карте</Button>
-					<Button>Чат с курьером</Button>
-				</React.Fragment>
-				}
+class Business extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			fetchedUser: null,
+		};
+	}
+
+	getBusinessOrders() {
+		const businessOrders = [
+			{
+				"shop": 'Магазин "Развивающие игрушки"',
+				"date": '06.06.2020',
+				"state": 'Везут',
+				"number": '5488779',
+				"target": 'Москва, ул. Братиславская, д. 31к1',
+				"courier_id": 123,
+				"courier_name": 'Иванов Виктор',
+			},
+			{
+				"shop": 'Магазин "Автозапчасти"',
+				"date": '08.06.2020',
+				"state": 'Везут',
+				"number": '34643-643',
+				"target": 'Москва, ул. Братиславская, д. 31к1',
+				"courier_id": 124,
+				"courier_name": 'Равшан Ильюсович',
+			},
+		]
+		return businessOrders
+	}
+
+	render() {
+		const props = this.props;
+		return (
+			<Panel id={props.id}>
+				<PanelHeader
+					left={<PanelHeaderButton onClick={props.go} data-to="home">
+						{osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
+					</PanelHeaderButton>}
 				>
-				№322356
-			</RichCell>
-			<RichCell
-				disabled
-				multiline
-				before={<Avatar size={72}  />} // src={getAvatarUrl('user_ti')}
-				text='Курьер Равшан Ильюсович'
-				caption="05.06.2020"
-				after="Отправлен"
-				actions={
-				<React.Fragment>
-					<Button>Курьер на карте</Button>
-					<Button>Чат с курьером</Button>
-				</React.Fragment>
-				}
-				>
-				№789-7890      	
-			</RichCell>
-		</Group>
-	</Panel>
-);
+					Бизнес
+				</PanelHeader>
+				<Group header={<Header>У курьера</Header>}>
+					{this.getBusinessOrders().map((order) =>
+						<RichCell
+							disabled
+							multiline
+							before={<Avatar size={72} />} // src={getAvatarUrl('user_ti')}
+							text={"Курьер " + order.courier_name}
+							caption={order.date}
+							after={order.state}
+							actions={
+								<React.Fragment>
+									<Button onClick={(e) => props.go(e, order)} data-to="view_where_courier_for_business">Курьер на карте</Button>
+									<Button>Чат с курьером</Button>
+								</React.Fragment>
+							}
+						>
+							{order.number}
+						</RichCell>
+					)
+					}
+				</Group>
+			</Panel>
+		);
+	}
+}
 
 Business.propTypes = {
 	id: PropTypes.string.isRequired,
