@@ -60,7 +60,7 @@ class Business extends React.Component {
 				</PanelHeader>
 				<Group header={<Header>У курьера</Header>}>
 					{this.getBusinessOrders().map((order) =>
-						<RichCell
+						<RichCell key={order.number}
 							disabled
 							multiline
 							before={<Avatar size={72} />} // src={getAvatarUrl('user_ti')}

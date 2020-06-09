@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import { View, Epic, Tabbar, TabbarItem } from '@vkontakte/vkui';
+import { View, Epic, Tabbar, TabbarItem, Panel, PanelHeader } from '@vkontakte/vkui';
 import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import Icon28NewsfeedOutline from '@vkontakte/icons/dist/28/newsfeed_outline'
 import Icon28SearchOutline from '@vkontakte/icons/dist/28/search_outline';
+import Icon28CompassOutline from '@vkontakte/icons/dist/28/compass_outline';
 import { ROUTES } from './Routes';
 
 import '@vkontakte/vkui/dist/vkui.css';
@@ -16,6 +17,7 @@ import Business from './panels/Business';
 import GeodataClient from './panels/Geodata';
 import GeodataCourier from './panels/CourierGeodata';
 import GeodataBusiness from './panels/BusinessGeodata';
+import BusinessAllCourier from './panels/BusinessAllCourier';
 
 const location = window.location.hash.substr(1);
 
@@ -70,23 +72,34 @@ class App extends React.Component {
 	};
 
 	render() {
+		var tabbarApp
+		if (this.state.activePanel === 'business') {
+			tabbarApp = <Tabbar>
+				<TabbarItem
+					onClick={this.onStoryChange}
+					selected={this.state.activeStory === 'main'}
+					data-story="main"
+					text="Начало"
+				><Icon28NewsfeedOutline /></TabbarItem>
+				<TabbarItem
+					onClick={this.onStoryChange}
+					selected={this.state.activeStory === 'business_view'}
+					data-story="business_view"
+					text="Курьеры на карте"
+				><Icon28CompassOutline /></TabbarItem>
+				<TabbarItem
+					onClick={this.onStoryChange}
+					selected={this.state.activeStory === 'discover'}
+					data-story="discover"
+					text="Поиск заказа"
+				><Icon28SearchOutline /></TabbarItem>
+			</Tabbar>
+		} else {
+			tabbarApp = null
+		}
 		return (
-			<Epic activeStory={this.state.activeStory} tabbar={
-				<Tabbar>
-					<TabbarItem
-						onClick={this.onStoryChange}
-						selected={this.state.activeStory === 'main'}
-						data-story="main"
-						text="Начало"
-					><Icon28NewsfeedOutline /></TabbarItem>
-					<TabbarItem
-						onClick={this.onStoryChange}
-						selected={this.state.activeStory === 'discover'}
-						data-story="discover"
-						text="Поиск"
-					><Icon28SearchOutline /></TabbarItem>
-				</Tabbar>
-			}>
+			<Epic activeStory={this.state.activeStory} tabbar={tabbarApp}
+			>
 				<View id='main' activePanel={this.state.activePanel} popout={this.state.popout}>
 					<Home id='home' fetchedUser={this.state.fetchedUser} go={this.go} />
 					<Client id='client' data={this.state.data} go={this.go} />
@@ -95,6 +108,9 @@ class App extends React.Component {
 					<GeodataClient id='view_where_courier' order={this.state.client_order} go={this.go} />
 					<GeodataCourier id='view_where_client' order={this.state.courier_order} go={this.go} />
 					<GeodataBusiness id='view_where_courier_for_business' order={this.state.client_order_for_business} go={this.go} />
+				</View>
+				<View id="business_view" activePanel="business_view">
+					<BusinessAllCourier id="business_view" business_id='123' business_name='Магазин Автозапчастей' go={this.go}/>
 				</View>
 			</Epic>
 		);
