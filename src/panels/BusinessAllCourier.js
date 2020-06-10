@@ -36,7 +36,7 @@ class BusinessAllCourier extends React.Component {
         };
 
         this.state.geoUpdateInterval = setInterval(() => {
-            this.fetchOrdersWithGeo(props.business_id)
+            this.setState({orders: this.fetchOrdersWithGeo(props.business_id)})
         }, 5000);
     }
 
@@ -73,7 +73,7 @@ class BusinessAllCourier extends React.Component {
         if (this.state && this.state.orders) {
             this.state.orders[0].geodata.lat = this.state.orders[0].geodata.lat + 0.0001
             this.state.orders[0].geodata.long = this.state.orders[0].geodata.long + 0.0001
-            this.setState({ orders: this.state.orders })
+            return this.state.orders
         } else {
             return [
                 {
