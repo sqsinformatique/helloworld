@@ -5,6 +5,7 @@ import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenS
 import Icon28NewsfeedOutline from '@vkontakte/icons/dist/28/newsfeed_outline'
 import Icon28SearchOutline from '@vkontakte/icons/dist/28/search_outline';
 import Icon28CompassOutline from '@vkontakte/icons/dist/28/compass_outline';
+import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
 import { ROUTES } from './Routes';
 
 import '@vkontakte/vkui/dist/vkui.css';
@@ -18,6 +19,7 @@ import GeodataClient from './panels/Geodata';
 import GeodataCourier from './panels/CourierGeodata';
 import GeodataBusiness from './panels/BusinessGeodata';
 import BusinessAllCourier from './panels/BusinessAllCourier';
+import BusinessNewOrder from './panels/BusinessNewOrder';
 
 const location = window.location.hash.substr(1);
 
@@ -89,6 +91,12 @@ class App extends React.Component {
 				><Icon28CompassOutline /></TabbarItem>
 				<TabbarItem
 					onClick={this.onStoryChange}
+					selected={this.state.activeStory === 'business_view_add_order'}
+					data-story="business_view_add_order"
+					text="Новый заказ"
+				><Icon28MarketAddBadgeOutline /></TabbarItem>
+				<TabbarItem
+					onClick={this.onStoryChange}
 					selected={this.state.activeStory === 'discover'}
 					data-story="discover"
 					text="Поиск заказа"
@@ -111,6 +119,9 @@ class App extends React.Component {
 				</View>
 				<View id="business_view" activePanel="business_view">
 					<BusinessAllCourier id="business_view" business_id='123' business_name='Магазин Автозапчастей' go={this.go}/>
+				</View>
+				<View id="business_view_add_order" activePanel="business_view_add_order">
+					<BusinessNewOrder id="business_view_add_order" business_id='123' business_name='Магазин Автозапчастей' go={this.go}/>
 				</View>
 			</Epic>
 		);
