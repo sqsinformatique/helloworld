@@ -6,7 +6,7 @@ import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
-import { RichCell, Button, Avatar, FormLayout, Input, Textarea } from '@vkontakte/vkui';
+import { RichCell, Button, Avatar, FormLayout, Input, Textarea, Select } from '@vkontakte/vkui';
 import Header from '@vkontakte/vkui/dist/components/Header/Header';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 
@@ -24,46 +24,15 @@ class BusinessNewOrder extends React.Component {
             purpose: ''
         };
 
-        this.addressItems = [
-            { label: 'Почтовый индекс', name: 'zip' },
-            { label: 'Страна', name: 'country' },
-            { label: 'Город', name: 'city' }
-        ];
-
         this.onChange = this.onChange.bind(this);
     }
 
     onChange(e) {
         const { name, value } = e.currentTarget;
         this.setState({ [name]: value });
-      }
-    
-
-    getBusinessOrders() {
-        const businessOrders = [
-            {
-                "shop": 'Магазин "Развивающие игрушки"',
-                "date": '06.06.2020',
-                "state": 'Везут',
-                "number": '5488779',
-                "target": 'Москва, ул. Братиславская, д. 31к1',
-                "courier_id": 123,
-                "courier_name": 'Иванов Виктор',
-            },
-            {
-                "shop": 'Магазин "Автозапчасти"',
-                "date": '08.06.2020',
-                "state": 'Везут',
-                "number": '34643-643',
-                "target": 'Москва, ул. Братиславская, д. 31к1',
-                "courier_id": 124,
-                "courier_name": 'Равшан Ильюсович',
-            },
-        ]
-        return businessOrders
     }
 
-    buttonHandler(){
+    buttonHandler() {
         alert("test!")
     }
 
@@ -91,12 +60,13 @@ class BusinessNewOrder extends React.Component {
                     />
 
                     <Input top="Мобильный телефон" keyboardType={'phone-pad'} defaultValue="+7 12 344 15 48" />
-
-                    {this.addressItems.map(({ label, name }) => (
-                        <Input type="text" name={name} key={name} top={label} />
-                    ))}
+                    <Input top="Адрес доставки" />
 
                     <Textarea top="Описание заказа" />
+                    <Select top="Выбрать курьера">
+                        <option value="m">Иван</option>
+                        <option value="f">Василий</option>
+                    </Select>
                     <Button size="xl" onClick={this.buttonHandler}>Создать заказ</Button>
                 </FormLayout>
             </Panel>

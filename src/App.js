@@ -3,9 +3,12 @@ import bridge from '@vkontakte/vk-bridge';
 import { View, Epic, Tabbar, TabbarItem, Panel, PanelHeader } from '@vkontakte/vkui';
 import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import Icon28NewsfeedOutline from '@vkontakte/icons/dist/28/newsfeed_outline'
-import Icon28SearchOutline from '@vkontakte/icons/dist/28/search_outline';
+import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
 import Icon28CompassOutline from '@vkontakte/icons/dist/28/compass_outline';
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
+import Icon28SettingsOutline from '@vkontakte/icons/dist/28/settings_outline';
+import Icon28CubeBoxOutline from '@vkontakte/icons/dist/28/cube_box_outline';
+
 import { ROUTES } from './Routes';
 
 import '@vkontakte/vkui/dist/vkui.css';
@@ -13,15 +16,18 @@ import '@vkontakte/vkui/dist/vkui.css';
 
 import Home from './panels/Home';
 import Client from './panels/Client/Client';
+import Business from './panels/Business/Business';
+import BusinessOptions from './panels/Business/BusinessOptions';
+import WelcomeScreen from './panels/PopUpWindows/WelcomeScreen';
+
+
 import Сourier from './panels/Сourier';
-import Business from './panels/Business';
 import GeodataClient from './panels/Geodata';
 import GeodataCourier from './panels/CourierGeodata';
 import GeodataBusiness from './panels/BusinessGeodata';
 import BusinessAllCourier from './panels/BusinessAllCourier';
 import BusinessNewOrder from './panels/BusinessNewOrder';
 
-import WelcomeScreen from './panels/PopUpWindows/WelcomeScreen';
 
 const location = window.location.hash.substr(1);
 
@@ -37,6 +43,7 @@ class App extends React.Component {
 			client_order: null,
 			courier_order: null,
 			client_order_for_business: null,
+			user: null,
 		};
 
 		this.onStoryChange = this.onStoryChange.bind(this);
@@ -64,13 +71,13 @@ class App extends React.Component {
 		let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/'
 		switch (userType) {
 			case 'client':
-				url = url+'clients/'
+				url = url + 'clients/'
 				break;
 			case 'courier':
-				url = url+'curiers/'
+				url = url + 'curiers/'
 				break;
 			case 'business':
-				url = url+'business/'
+				url = url + 'business/'
 				break;
 			default:
 				return true;
@@ -78,6 +85,9 @@ class App extends React.Component {
 
 		let response = await fetch(url + this.state.fetchedUser.id);
 		if (response.ok) { // если HTTP-статус в диапазоне 200-299
+			let json = await response.json();
+			this.setState({user: json.result})
+			
 			return true;
 		}
 		this.setState({ popout: <WelcomeScreen userType={userType} fetchedUser={this.state.fetchedUser} closePopout={this.closePopout} /> })
@@ -108,40 +118,61 @@ class App extends React.Component {
 		this.setLocation(route)
 	};
 
-	render() {
-		var tabbarApp
-		if (this.state.activePanel === 'business') {
-			tabbarApp = <Tabbar>
-				<TabbarItem
-					onClick={this.onStoryChange}
-					selected={this.state.activeStory === 'main'}
-					data-story="main"
-					text="Начало"
-				><Icon28NewsfeedOutline /></TabbarItem>
-				<TabbarItem
-					onClick={this.onStoryChange}
-					selected={this.state.activeStory === 'business_view'}
-					data-story="business_view"
-					text="Курьеры на карте"
-				><Icon28CompassOutline /></TabbarItem>
-				<TabbarItem
-					onClick={this.onStoryChange}
-					selected={this.state.activeStory === 'business_view_add_order'}
-					data-story="business_view_add_order"
-					text="Новый заказ"
-				><Icon28MarketAddBadgeOutline /></TabbarItem>
-				<TabbarItem
-					onClick={this.onStoryChange}
-					selected={this.state.activeStory === 'discover'}
-					data-story="discover"
-					text="Поиск заказа"
-				><Icon28SearchOutline /></TabbarItem>
-			</Tabbar>
-		} else {
-			tabbarApp = null
+	tabbarByUserType(userType) {
+		var tabbarApp = null
+		switch (this.state.activePanel) {
+			case 'client':
+				tabbarApp = <Tabbar>
+					<TabbarItem
+						onClick={this.onStoryChange}
+						selected={this.state.activeStory === 'client_orders_ondelivery'}
+						data-story="client_orders_ondelivery"
+						text="Мне везут"
+					><Icon28CubeBoxOutline /></TabbarItem>
+					<TabbarItem
+						onClick={this.onStoryChange}
+						selected={this.state.activeStory === 'client_options'}
+						data-story="client_options"
+						text="Настройки"
+					><Icon28SettingsOutline /></TabbarItem>
+				</Tabbar >
+				break;
+			case 'business':
+				tabbarApp = <Tabbar>
+					<TabbarItem
+						onClick={this.onStoryChange}
+						selected={this.state.activeStory === 'main'}
+						data-story="main"
+						text="Заказы в работе"
+					><Icon28ListOutline /></TabbarItem>
+					<TabbarItem
+						onClick={this.onStoryChange}
+						selected={this.state.activeStory === 'business_couriers_onmap'}
+						data-story="business_couriers_onmap"
+						text="Курьеры на карте"
+					><Icon28CompassOutline /></TabbarItem>
+					<TabbarItem
+						onClick={this.onStoryChange}
+						selected={this.state.activeStory === 'business_add_order'}
+						data-story="business_add_order"
+						text="Новый заказ"
+					><Icon28MarketAddBadgeOutline /></TabbarItem>
+					<TabbarItem
+						onClick={this.onStoryChange}
+						selected={this.state.activeStory === 'business_options'}
+						data-story="business_options"
+						text="Настройки"
+					><Icon28SettingsOutline /></TabbarItem>
+				</Tabbar>
+				break;
 		}
+
+		return tabbarApp
+	}
+
+	render() {
 		return (
-			<Epic activeStory={this.state.activeStory} tabbar={tabbarApp}
+			<Epic activeStory={this.state.activeStory} tabbar={this.tabbarByUserType(this.state.activePanel)}
 			>
 				<View id='main' activePanel={this.state.activePanel} popout={this.state.popout}>
 					<Home id='home' fetchedUser={this.state.fetchedUser} go={this.go} />
@@ -152,12 +183,16 @@ class App extends React.Component {
 					<GeodataCourier id='view_where_client' order={this.state.courier_order} go={this.go} />
 					<GeodataBusiness id='view_where_courier_for_business' order={this.state.client_order_for_business} go={this.go} />
 				</View>
-				<View id="business_view" activePanel="business_view">
-					<BusinessAllCourier id="business_view" business_id='123' business_name='Магазин Автозапчастей' go={this.go} />
+				<View id="business_couriers_onmap" activePanel="business_couriers_onmap">
+					<BusinessAllCourier id="business_couriers_onmap" business_id='123' business_name='Магазин Автозапчастей' go={this.go} />
 				</View>
-				<View id="business_view_add_order" activePanel="business_view_add_order">
-					<BusinessNewOrder id="business_view_add_order" business_id='123' business_name='Магазин Автозапчастей' go={this.go} />
+				<View id="business_add_order" activePanel="business_add_order">
+					<BusinessNewOrder id="business_add_order" user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 				</View>
+				<View id="business_options" activePanel="business_options">
+					<BusinessOptions id="business_options" user={this.state.user} fetchedUser={this.state.fetchedUser}  go={this.go} />
+				</View>
+
 			</Epic>
 		);
 	}
