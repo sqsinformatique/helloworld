@@ -13,7 +13,7 @@ import Icon28CubeBoxOutline from '@vkontakte/icons/dist/28/cube_box_outline'
 const Home = ({ id, go, fetchedUser }) => (
 	<Panel id={id}>
 		<PanelHeader>Где курьер?</PanelHeader>
-		{fetchedUser &&
+		{/* {fetchedUser &&
 		<Group title="User Data Fetched with VK Bridge">
 			<Cell
 				before={fetchedUser.photo_200 ? <Avatar src={fetchedUser.photo_200}/> : null}
@@ -21,7 +21,7 @@ const Home = ({ id, go, fetchedUser }) => (
 			>
 				{`${fetchedUser.first_name} ${fetchedUser.last_name}`}
 			</Cell>
-		</Group>}
+		</Group>} */}
 
 		<Group title="Navigation Example">
 			<Div>

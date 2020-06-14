@@ -12,7 +12,7 @@ import '@vkontakte/vkui/dist/vkui.css';
 
 
 import Home from './panels/Home';
-import Client from './panels/Client';
+import Client from './panels/Client/Client';
 import Сourier from './panels/Сourier';
 import Business from './panels/Business';
 import GeodataClient from './panels/Geodata';
@@ -20,6 +20,8 @@ import GeodataCourier from './panels/CourierGeodata';
 import GeodataBusiness from './panels/BusinessGeodata';
 import BusinessAllCourier from './panels/BusinessAllCourier';
 import BusinessNewOrder from './panels/BusinessNewOrder';
+
+import WelcomeScreen from './panels/PopUpWindows/WelcomeScreen';
 
 const location = window.location.hash.substr(1);
 
@@ -57,8 +59,41 @@ class App extends React.Component {
 		}
 	}
 
+	// Проверяем, есть ли такой пользователь у нас на бэке
+	async fetchUser(userType) {
+		let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/'
+		switch (userType) {
+			case 'client':
+				url = url+'clients/'
+				break;
+			case 'courier':
+				url = url+'curiers/'
+				break;
+			case 'business':
+				url = url+'business/'
+				break;
+			default:
+				return true;
+		}
+
+		let response = await fetch(url + this.state.fetchedUser.id);
+		if (response.ok) { // если HTTP-статус в диапазоне 200-299
+			return true;
+		}
+		this.setState({ popout: <WelcomeScreen userType={userType} fetchedUser={this.state.fetchedUser} closePopout={this.closePopout} /> })
+		return false;
+	}
+
+	closePopout = () => {
+		this.setState({ popout: null, activePanel: 'home' });
+	}
+
 	go = (e, object) => {
 		const route = e.currentTarget.dataset.to;
+
+		// Вывод предупреждения для нового пользователя
+		this.fetchUser(route)
+
 		if (route === 'view_where_courier') {
 			this.setState({ client_order: object })
 		}
@@ -118,10 +153,10 @@ class App extends React.Component {
 					<GeodataBusiness id='view_where_courier_for_business' order={this.state.client_order_for_business} go={this.go} />
 				</View>
 				<View id="business_view" activePanel="business_view">
-					<BusinessAllCourier id="business_view" business_id='123' business_name='Магазин Автозапчастей' go={this.go}/>
+					<BusinessAllCourier id="business_view" business_id='123' business_name='Магазин Автозапчастей' go={this.go} />
 				</View>
 				<View id="business_view_add_order" activePanel="business_view_add_order">
-					<BusinessNewOrder id="business_view_add_order" business_id='123' business_name='Магазин Автозапчастей' go={this.go}/>
+					<BusinessNewOrder id="business_view_add_order" business_id='123' business_name='Магазин Автозапчастей' go={this.go} />
 				</View>
 			</Epic>
 		);
