@@ -55,6 +55,8 @@ class BusinessOptions extends React.Component {
             let json = response.json();
             console.log(json)
         }
+
+        await this.getMyCuriers()
     }
 
     async unbind(curier_id) {
@@ -86,7 +88,6 @@ class BusinessOptions extends React.Component {
         if (this.state.validatePhone) {
             this.createBinding()
         }
-        this.getMyCuriers()
     }
 
     updatePhoneValue = (e) => {
@@ -135,7 +136,12 @@ class BusinessOptions extends React.Component {
                 }
                 <FormLayout>
                     {errPhone}
-                    <Input id='telephone' top="Добавить курьера по номеру телефона" onFocus={this.resetPhoneValue} value="+7123456789" onChange={this.updatePhoneValue} />
+                    <Input id='telephone' top="Добавить курьера по номеру телефона" 
+                    // onFocus={this.resetPhoneValue} value="+7123456789"
+                    value={this.state.phone}
+                    keyboardtype={'phone-pad'}
+                     onChange={this.updatePhoneValue} 
+                    />
                     <Button size="xl" onClick={this.addCourier}>Добавить</Button>
                 </FormLayout>
             </Panel>
