@@ -19,6 +19,7 @@ import Client from './panels/Client/Client';
 import Business from './panels/Business/Business';
 import BusinessOptions from './panels/Business/BusinessOptions';
 import WelcomeScreen from './panels/PopUpWindows/WelcomeScreen';
+import BusinessNewOrder from './panels/Business/BusinessNewOrder';
 
 
 import Сourier from './panels/Сourier';
@@ -26,7 +27,6 @@ import GeodataClient from './panels/Geodata';
 import GeodataCourier from './panels/CourierGeodata';
 import GeodataBusiness from './panels/BusinessGeodata';
 import BusinessAllCourier from './panels/BusinessAllCourier';
-import BusinessNewOrder from './panels/BusinessNewOrder';
 
 
 const location = window.location.hash.substr(1);
