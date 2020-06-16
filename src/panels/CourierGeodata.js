@@ -68,53 +68,68 @@ class GeodataCourier extends React.Component {
 
         this.state = {
             courier_id: -1,
-            courier_geodata: { lat: 55.659200, long: 37.753314 },
+            courier_geodata: props.courier_geodata,
         };
 
-        this.state.geoUpdateInterval = setInterval(() => {
-            this.fetchCourierGeo()
-        }, 5000);
+        // this.state.geoUpdateInterval = setInterval(() => {
+        //     this.fetchCourierGeo()
+        // }, 5000);
     }
 
     async componentDidMount() {
         const props = this.props;
-        this.setState({ courier_id: props.order.courier_id })
+        this.setState({ courier_id: props.order.courier_id, courier_geodata: props.courier_geodata })
+        
+        console.log("qqqqqqq", props.courier_geodata)
 
-        // получаем координаты курьера
+        // // получаем координаты курьера
         // const geodata = await bridge.send('VKWebAppGetGeodata');
         // this.setState({ courier_geodata: geodata });
-
-        // пока заглушка
-        this.setState({
-            courier_geodata: {
-                lat: 55.659200,
-                long: 37.753314
-            }
-        })
 
         // отправляем координаты курьера на бек
     }
 
-    async fetchCourierGeo() {
-        if (this.state.courier_id > 0) {
-            // получаем координаты курьера
-            // const geodata = await bridge.send('VKWebAppGetGeodata');
-            // this.setState({ courier_geodata: geodata });
+    // async fetchCourierGeo() {
+    // const props = this.props;
 
-            // пока заглушка
-            this.setState({
-                courier_geodata: {
-                    lat: this.state.courier_geodata.lat + 0.00001,
-                    long: this.state.courier_geodata.long + 0.00001
-                }
-            })
+    // получаем координаты курьера
+    // const geodata = await bridge.send('VKWebAppGetGeodata');
+    // this.setState({ courier_geodata: geodata });
 
-            // отправляем координаты курьера на бек
+    // if (this.state.courier_id > 0) {
+    //     // получаем координаты курьера
+    //     // const geodata = await bridge.send('VKWebAppGetGeodata');
+    //     // this.setState({ courier_geodata: geodata });
+
+
+    //     // пока заглушка
+    //     this.setState({
+    //         courier_geodata: {
+    //             lat: this.state.courier_geodata.lat + 0.00001,
+    //             long: this.state.courier_geodata.long + 0.00001
+    //         }
+    //     })
+
+    //     // отправляем координаты курьера на бек
+    // }
+    // }
+
+    fullOrderDate(order) {
+        return order.order_date + " с " + order.order_time_begin + " до " + order.order_time_end
+    }
+
+    orderStateToString(state) {
+        switch (state) {
+            case 'to_delivery':
+                return 'В доставке'
+            default:
+                return 'Не известное состояние'
         }
     }
 
     render() {
         const props = this.props;
+
         return (
             <Panel id={props.id}>
                 <PanelHeader
@@ -126,21 +141,22 @@ class GeodataCourier extends React.Component {
                     {props.order.shop}
                 </PanelHeader>
                 <RichCell
+                    key={props.order.order_number}
                     disabled
                     multiline
                     before={<Avatar size={72} />} // src={getAvatarUrl('user_ti')}
                     text=''
-                    caption={props.order.date}
-                    after={props.order.state}
+                    caption={this.fullOrderDate(props.order)}
+                    after={this.orderStateToString(props.order.order_state)}
                     actions={
                         <React.Fragment>
                             <Button>Чат с клиентом</Button>
                         </React.Fragment>
                     }
                 >
-                    {props.order.number}
+                    {props.order.order_number}
                 </RichCell>
-                {geoMap(props.order.target, this.state.courier_geodata)}
+                {geoMap(props.order.order_address, props.courier_geodata)}
             </Panel>
         )
     }

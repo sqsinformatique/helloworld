@@ -20,9 +20,9 @@ import Business from './panels/Business/Business';
 import BusinessOptions from './panels/Business/BusinessOptions';
 import WelcomeScreen from './panels/PopUpWindows/WelcomeScreen';
 import BusinessNewOrder from './panels/Business/BusinessNewOrder';
+import Сourier from './panels/Courier/Сourier';
 
 
-import Сourier from './panels/Сourier';
 import GeodataClient from './panels/Geodata';
 import GeodataCourier from './panels/CourierGeodata';
 import GeodataBusiness from './panels/BusinessGeodata';
@@ -44,9 +44,59 @@ class App extends React.Component {
 			courier_order: null,
 			client_order_for_business: null,
 			user: null,
+			courier_geodata:  { lat: 55.659200, long: 37.753314 },
 		};
 
 		this.onStoryChange = this.onStoryChange.bind(this);
+
+		this.state.geoUpdateInterval = setInterval(() => {
+			this.fetchCourierGeo()
+			// console.log("tick")
+		}, 5000);
+
+		// получаем координаты курьера
+		// const geodata = await bridge.send('VKWebAppGetGeodata');
+		// this.setState({ courier_geodata: geodata });
+
+	}
+
+	async fetchCourierGeo() {
+		if (this.state.activePanel === 'courier' || this.state.activePanel === 'view_where_client') {
+			// получаем координаты курьера
+			const geodata = await bridge.send('VKWebAppGetGeodata');
+			this.setState({ courier_geodata: geodata });
+
+			let curiergeo = {
+				curier_id: this.state.user.curier_id,
+				lat: geodata.lat,
+				long: geodata.long,
+			};
+
+			let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/curiers/geo'
+			let response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json;charset=utf-8'
+				},
+				body: JSON.stringify(curiergeo)
+			});
+			if (response.ok) { // если HTTP-статус в диапазоне 200-299
+				// получаем тело ответа
+				let json = response.json();
+				console.log(json)
+			}
+
+
+			// пока заглушка
+			// this.setState({
+			// 	courier_geodata: {
+			// 		lat: this.state.courier_geodata.lat + 0.00001,
+			// 		long: this.state.courier_geodata.long + 0.00001
+			// 	}
+			// })
+
+			// отправляем координаты курьера на бек
+		}
 	}
 
 	async componentDidMount() {
@@ -86,8 +136,8 @@ class App extends React.Component {
 		let response = await fetch(url + this.state.fetchedUser.id);
 		if (response.ok) { // если HTTP-статус в диапазоне 200-299
 			let json = await response.json();
-			this.setState({user: json.result})
-			
+			this.setState({ user: json.result })
+
 			return true;
 		}
 		this.setState({ popout: <WelcomeScreen userType={userType} fetchedUser={this.state.fetchedUser} closePopout={this.closePopout} /> })
@@ -106,6 +156,7 @@ class App extends React.Component {
 
 		if (route === 'view_where_courier') {
 			this.setState({ client_order: object })
+			this.fetchCourierGeo()
 		}
 		if (route === 'view_where_client') {
 			this.setState({ courier_order: object })
@@ -176,21 +227,21 @@ class App extends React.Component {
 			>
 				<View id='main' activePanel={this.state.activePanel} popout={this.state.popout}>
 					<Home id='home' fetchedUser={this.state.fetchedUser} go={this.go} />
-					<Client id='client' data={this.state.data} go={this.go} />
-					<Сourier id='courier' go={this.go} />
-					<Business id='business' go={this.go} />
+					<Client id='client' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
+					<Сourier id='courier' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
+					<Business id='business' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 					<GeodataClient id='view_where_courier' order={this.state.client_order} go={this.go} />
-					<GeodataCourier id='view_where_client' order={this.state.courier_order} go={this.go} />
+					<GeodataCourier id='view_where_client' order={this.state.courier_order} courier_geodata={this.state.courier_geodata} go={this.go} />
 					<GeodataBusiness id='view_where_courier_for_business' order={this.state.client_order_for_business} go={this.go} />
 				</View>
 				<View id="business_couriers_onmap" activePanel="business_couriers_onmap">
-					<BusinessAllCourier id="business_couriers_onmap" business_id='123' business_name='Магазин Автозапчастей' go={this.go} />
+					<BusinessAllCourier id="business_couriers_onmap" user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 				</View>
 				<View id="business_add_order" activePanel="business_add_order">
 					<BusinessNewOrder id="business_add_order" user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 				</View>
 				<View id="business_options" activePanel="business_options">
-					<BusinessOptions id="business_options" user={this.state.user} fetchedUser={this.state.fetchedUser}  go={this.go} />
+					<BusinessOptions id="business_options" user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 				</View>
 
 			</Epic>

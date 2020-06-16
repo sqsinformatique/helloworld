@@ -78,23 +78,50 @@ class GeodataBusiness extends React.Component {
 
     async componentDidMount() {
         const props = this.props;
-        this.setState({ courier_id: props.order.courier_id })
+        this.setState({ courier_id: props.order.curier_id })
+
+        let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/curiers/geo/'
+        let response = await fetch(url + props.order.curier_id);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+            let json = await response.json();
+            this.setState({ courier_geodata: { lat: json.result.lat, long: json.result.long } })
+        }
 
         // возвращаем с бека координаты курьера
         // пока заглушка
-        this.setState({ courier_geodata: { lat: 55.659200, long: 37.753314 } })
+        // this.setState({ courier_geodata: { lat: 55.659200, long: 37.753314 } })
     }
 
     async fetchCourierGeo() {
         if (this.state.courier_id > 0) {
-            // возвращаем с бека координаты курьера
-            // пока заглушка
-            this.setState({
-                courier_geodata: {
-                    lat: this.state.courier_geodata.lat + 0.00001,
-                    long: this.state.courier_geodata.long + 0.00001
-                }
-            })
+
+            let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/curiers/geo/'
+            let response = await fetch(url + this.state.courier_id);
+            if (response.ok) { // если HTTP-статус в диапазоне 200-299
+                let json = await response.json();
+                this.setState({ courier_geodata: { lat: json.result.lat, long: json.result.long } })
+            }
+            //     // возвращаем с бека координаты курьера
+            //     // пока заглушка
+            //     this.setState({
+            //         courier_geodata: {
+            //             lat: this.state.courier_geodata.lat + 0.00001,
+            //             long: this.state.courier_geodata.long + 0.00001
+            //         }
+            //     })
+        }
+    }
+
+    fullOrderDate(order) {
+        return order.order_date + " с " + order.order_time_begin + " до " + order.order_time_end
+    }
+
+    orderStateToString(state) {
+        switch (state) {
+            case 'to_delivery':
+                return 'В доставке'
+            default:
+                return 'Не известное состояние'
         }
     }
 
@@ -114,9 +141,9 @@ class GeodataBusiness extends React.Component {
                     disabled
                     multiline
                     before={<Avatar size={72} />} // src={getAvatarUrl('user_ti')}
-                    text={props.order.courier_name}
-                    caption={props.order.date}
-                    after={props.order.state}
+                    text={props.order.curier_name}
+                    caption={this.fullOrderDate(props.order)}
+                    after={this.orderStateToString(props.order.order_state)}
                     actions={
                         <React.Fragment>
                             <Button>Чат с курьером</Button>
@@ -125,7 +152,7 @@ class GeodataBusiness extends React.Component {
                 >
                     {props.order.number}
                 </RichCell>
-                {geoMap(props.order.target, this.state.courier_geodata)}
+                {geoMap(props.order.order_address, this.state.courier_geodata)}
             </Panel>
         )
     }

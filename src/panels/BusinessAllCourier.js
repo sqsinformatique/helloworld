@@ -27,16 +27,15 @@ class BusinessAllCourier extends React.Component {
     constructor(props) {
         super(props);
 
-        var orders = this.fetchOrdersWithGeo(props.business_id)
-
         this.state = {
-            business_id: props.business_id,
-            orders: orders,
+            fetchedUser:  props.fetchedUser,
+            orders: null,
             ymaps: null,
+            user: props.user,
         };
 
         this.state.geoUpdateInterval = setInterval(() => {
-            this.setState({orders: this.fetchOrdersWithGeo(props.business_id)})
+            this.getBusinessOrders()
         }, 5000);
     }
 
@@ -69,36 +68,79 @@ class BusinessAllCourier extends React.Component {
     //     console.log("mount")
     // }
 
-    fetchOrdersWithGeo(id) {
-        if (this.state && this.state.orders) {
-            this.state.orders[0].geodata.lat = this.state.orders[0].geodata.lat + 0.0001
-            this.state.orders[0].geodata.long = this.state.orders[0].geodata.long + 0.0001
-            return this.state.orders
-        } else {
-            return [
-                {
-                    "shop": 'Магазин "Развивающие игрушки"',
-                    "date": '06.06.2020',
-                    "state": 'Везут',
-                    "number": '5488779',
-                    "target": 'Москва, ул. Братиславская, д. 31к1',
-                    "courier_id": 123,
-                    "courier_name": 'Иванов Виктор',
-                    "geodata": { lat: 55.659200, long: 37.753314 }
-                },
-                {
-                    "shop": 'Магазин "Развивающие игрушки"',
-                    "date": '08.06.2020',
-                    "state": 'Везут',
-                    "number": '34643-643',
-                    "target": 'Москва, ул. Братиславская, д. 31к1',
-                    "courier_id": 124,
-                    "courier_name": 'Равшан Ильюсович',
-                    "geodata": { lat: 55.659209, long: 37.753434 }
-                },
-            ]
-        }
-    }
+    async componentDidMount() {
+		await this.fetchUser()
+		this.getBusinessOrders()
+	}
+
+    async fetchUser() {
+		let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/business/'
+
+		let response = await fetch(url + this.state.fetchedUser.id);
+		if (response.ok) { // если HTTP-статус в диапазоне 200-299
+			let json = await response.json();
+			this.setState({ user: json.result })
+		}
+	}
+
+    async getBusinessOrders() {
+		const props = this.props;
+
+		console.log(props.user)
+
+		let requestOrder = [
+			{
+				business_id: props.user.business_id,
+			}
+		]
+		console.log(requestOrder)
+
+		let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/orders/search'
+		let response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8'
+			},
+			body: JSON.stringify(requestOrder)
+		});
+		if (response.ok) { // если HTTP-статус в диапазоне 200-299
+			// получаем тело ответа
+			let json = await response.json();
+			console.log(json)
+			this.setState({ orders: json.result })
+		}
+	}
+
+    // fetchOrdersWithGeo(id) {
+    //     if (this.state && this.state.orders) {
+    //         this.state.orders[0].geodata.lat = this.state.orders[0].geodata.lat + 0.0001
+    //         this.state.orders[0].geodata.long = this.state.orders[0].geodata.long + 0.0001
+    //         return this.state.orders
+    //     } else {
+    //         return [
+    //             {
+    //                 "shop": 'Магазин "Развивающие игрушки"',
+    //                 "date": '06.06.2020',
+    //                 "state": 'Везут',
+    //                 "number": '5488779',
+    //                 "target": 'Москва, ул. Братиславская, д. 31к1',
+    //                 "courier_id": 123,
+    //                 "courier_name": 'Иванов Виктор',
+    //                 "geodata": { lat: 55.659200, long: 37.753314 }
+    //             },
+    //             {
+    //                 "shop": 'Магазин "Развивающие игрушки"',
+    //                 "date": '08.06.2020',
+    //                 "state": 'Везут',
+    //                 "number": '34643-643',
+    //                 "target": 'Москва, ул. Братиславская, д. 31к1',
+    //                 "courier_id": 124,
+    //                 "courier_name": 'Равшан Ильюсович',
+    //                 "geodata": { lat: 55.659209, long: 37.753434 }
+    //             },
+    //         ]
+    //     }
+    // }
 
     detailClick() {
         alert("test")
@@ -122,11 +164,11 @@ class BusinessAllCourier extends React.Component {
                 <YMaps query={{ apikey: '482da132-c4be-476f-95ef-79ba61d579a4', load: ['util.bounds', 'control.ZoomControl'] }} >
                     <Map width="100vw" height="100vh" defaultState={mapState} className='mapview' onLoad={ymaps => this.setYmaps(ymaps)}>
                         {this.state.orders && this.state.orders.map((order) =>
-                            <Placemark key={order.number} properties={{
-                                hintContent: order.courier_name,
+                            <Placemark key={order.order_number} properties={{
+                                hintContent: order.curier_name,
                                 properties: { name: "test" },
                                 balloonContent: '<div style="margin: 10px;">' +
-                                    '<b>' + order.courier_name + '</b><br /> Заказ: ' + order.number + '<br />' +
+                                    '<b>' + order.curier_name + '</b><br /> Заказ: ' + order.order_number + '<br />' +
                                     '<i id="count"></i> ' +
                                     // '<input type="button" onclick="this.detailClick()" value="Считать кроликов!"/>' +
                                     '</div>',

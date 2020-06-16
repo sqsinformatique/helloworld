@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormLayout, FormStatus, Panel, PanelHeader, Input, Button, Group, Cell, List, Header } from '@vkontakte/vkui';
+import { isValidPhone } from '../../modules/utils'
 
 class BusinessOptions extends React.Component {
     constructor(props) {
@@ -24,12 +25,6 @@ class BusinessOptions extends React.Component {
 
     async componentDidMount() {
         this.getMyCuriers()
-    }
-
-    isValidPhone(p) {
-        var phoneRe = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-        var digits = p.replace(/\D/g, "");
-        return phoneRe.test(digits);
     }
 
     async createBinding() {
@@ -84,7 +79,7 @@ class BusinessOptions extends React.Component {
     }
 
     addCourier = () => {
-        this.setState({ validatePhone: this.isValidPhone(this.state.phone) })
+        this.setState({ validatePhone: isValidPhone(this.state.phone) })
         if (this.state.validatePhone) {
             this.createBinding()
         }
@@ -136,11 +131,11 @@ class BusinessOptions extends React.Component {
                 }
                 <FormLayout>
                     {errPhone}
-                    <Input id='telephone' top="Добавить курьера по номеру телефона" 
-                    // onFocus={this.resetPhoneValue} value="+7123456789"
-                    value={this.state.phone}
-                    keyboardtype={'phone-pad'}
-                     onChange={this.updatePhoneValue} 
+                    <Input id='telephone' top="Добавить курьера по номеру телефона"
+                        // onFocus={this.resetPhoneValue} value="+7123456789"
+                        value={this.state.phone}
+                        type="tel"
+                        onChange={this.updatePhoneValue}
                     />
                     <Button size="xl" onClick={this.addCourier}>Добавить</Button>
                 </FormLayout>
