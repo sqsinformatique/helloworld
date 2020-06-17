@@ -17,7 +17,7 @@ class Сourier extends React.Component {
 		super(props);
 
 		this.state = {
-			fetchedUser:  props.fetchedUser,
+			fetchedUser: props.fetchedUser,
 			user: props.user,
 			orders: null,
 		};
@@ -40,6 +40,10 @@ class Сourier extends React.Component {
 	}
 
 	async getCourierOrders() {
+		if (!this.state.user) {
+			return
+		}
+
 		const props = this.props;
 
 		console.log(props.user)

@@ -94,6 +94,10 @@ class GeodataClient extends React.Component {
         // this.setState({ courier_geodata: { lat: 55.659200, long: 37.753314 } })
     }
 
+    componentWillUnmount() {
+        clearInterval(this.state.geoUpdateInterval)
+    }
+
     async fetchCourierGeo() {
         if (this.state.courier_id > 0) {
 

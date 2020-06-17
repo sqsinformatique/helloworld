@@ -41,9 +41,17 @@ class Business extends React.Component {
 	}
 
 	async getBusinessOrders() {
+		if (!this.state.user) {
+			return
+		}
+
 		const props = this.props;
 
 		console.log(props.user)
+
+		if (!props.user) {
+			return
+		}
 
 		let requestOrder = [
 			{

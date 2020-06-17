@@ -43,7 +43,7 @@ class BusinessNewOrder extends React.Component {
         let response = await fetch(url + props.user.business_id);
         let json = await response.json();
         this.setState({ couriers: json.result })
-        if (this.state.couriers) {
+        if (this.state.couriers && this.state.couriers.length > 0) {
             this.setState({ curier_id: this.state.couriers[0].curier_id })
         }
     }

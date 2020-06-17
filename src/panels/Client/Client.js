@@ -55,6 +55,10 @@ class Client extends React.Component {
 	}
 
 	async getClientOrders() {
+		if (!this.state.user) {
+			return
+		}
+
 		const props = this.props;
 
 		// const userPhone = await bridge.send("VKWebAppGetPhoneNumber", {});
@@ -115,7 +119,7 @@ class Client extends React.Component {
 							disabled
 							multiline
 							before={<Avatar size={72} />} // src={getAvatarUrl('user_ti')}
-							text={"Отправитель: "+order.business_name}
+							text={"Отправитель: " + order.business_name}
 							caption={this.fullOrderDate(order)}
 							after={this.orderStateToString(order.order_state)}
 							actions={
@@ -138,7 +142,6 @@ class Client extends React.Component {
 Client.propTypes = {
 	id: PropTypes.string.isRequired,
 	go: PropTypes.func.isRequired,
-	user: PropTypes.object.isRequired,
 };
 
 export default Client;

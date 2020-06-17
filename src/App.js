@@ -19,6 +19,7 @@ import Client from './panels/Client/Client';
 import Business from './panels/Business/Business';
 import BusinessOptions from './panels/Business/BusinessOptions';
 import WelcomeScreen from './panels/PopUpWindows/WelcomeScreen';
+import SetBusinessGroup from './panels/PopUpWindows/SetBusinessGroup'
 import BusinessNewOrder from './panels/Business/BusinessNewOrder';
 import Сourier from './panels/Courier/Сourier';
 
@@ -44,7 +45,7 @@ class App extends React.Component {
 			courier_order: null,
 			client_order_for_business: null,
 			user: null,
-			courier_geodata:  { lat: 55.659200, long: 37.753314 },
+			courier_geodata: { lat: 55.659200, long: 37.753314 },
 		};
 
 		this.onStoryChange = this.onStoryChange.bind(this);
@@ -66,6 +67,9 @@ class App extends React.Component {
 			const geodata = await bridge.send('VKWebAppGetGeodata');
 			this.setState({ courier_geodata: geodata });
 
+			if (!this.state.user) {
+				return
+			}
 			let curiergeo = {
 				curier_id: this.state.user.curier_id,
 				lat: geodata.lat,
@@ -85,17 +89,6 @@ class App extends React.Component {
 				let json = response.json();
 				console.log(json)
 			}
-
-
-			// пока заглушка
-			// this.setState({
-			// 	courier_geodata: {
-			// 		lat: this.state.courier_geodata.lat + 0.00001,
-			// 		long: this.state.courier_geodata.long + 0.00001
-			// 	}
-			// })
-
-			// отправляем координаты курьера на бек
 		}
 	}
 
@@ -144,8 +137,17 @@ class App extends React.Component {
 		return false;
 	}
 
-	closePopout = () => {
-		this.setState({ popout: null, activePanel: 'home' });
+	closePopout = (result, userType) => {
+		console.log(result)
+		if (!result) {
+			this.setState({ popout: null, activePanel: 'home' });
+		} else {
+			if (userType === 'business') {
+				this.setState({ popout: <SetBusinessGroup userType={userType} fetchedUser={this.state.fetchedUser} closePopout={this.closePopout} /> })
+			} else {
+				this.setState({ popout: null });
+			}
+		}
 	}
 
 	go = (e, object) => {
@@ -179,6 +181,22 @@ class App extends React.Component {
 						selected={this.state.activeStory === 'client_orders_ondelivery'}
 						data-story="client_orders_ondelivery"
 						text="Мне везут"
+					><Icon28CubeBoxOutline /></TabbarItem>
+					<TabbarItem
+						onClick={this.onStoryChange}
+						selected={this.state.activeStory === 'client_options'}
+						data-story="client_options"
+						text="Настройки"
+					><Icon28SettingsOutline /></TabbarItem>
+				</Tabbar >
+				break;
+			case 'courier':
+				tabbarApp = <Tabbar>
+					<TabbarItem
+						onClick={this.onStoryChange}
+						selected={this.state.activeStory === 'main'}
+						data-story="client_orders_ondelivery"
+						text="Я везу"
 					><Icon28CubeBoxOutline /></TabbarItem>
 					<TabbarItem
 						onClick={this.onStoryChange}

@@ -1,15 +1,41 @@
 import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import PropTypes from 'prop-types';
-import { PopoutWrapper, Button, Alert } from '@vkontakte/vkui';
+import { PopoutWrapper, Button, Alert, Select } from '@vkontakte/vkui';
 
-class WelcomeScreen extends React.Component {
+class SetBusinessGroup extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             fetchedUser: props.fetchedUser,
+            groups: null,
+            group_id: 0,
         };
+    }
+
+    async loadGroups() {
+        const props = this.props
+        const token = await bridge.send("VKWebAppGetAuthToken", { "app_id": 7500440, "scope": "groups" });
+        console.log(token)
+        const groupsData = await bridge.send("VKWebAppCallAPIMethod", {
+            "method": "groups.get",
+            "request_id": "sqsrequest",
+            "params": {
+                "user_id": props.fetchedUser.id,
+                "v": "5.110",
+                "access_token": token.access_token,
+                "extended": true,
+                "fields": "contacts",
+            }
+        });
+        console.log(groupsData.response)
+        this.setState({ groups: groupsData.response.items, group_id: groupsData.response.items[0].id })
+        console.log(this.state.groups)
+    }
+
+    async componentDidMount() {
+        await this.loadGroups()
     }
 
     async createUser() {
@@ -24,10 +50,8 @@ class WelcomeScreen extends React.Component {
                 url = url + 'curiers'
                 break;
             case 'business':
-                // url = url + 'business'
-                console.log("1111")
-                props.closePopout(true, props.userType)
-                return true
+                url = url + 'business'
+                break;
             default:
                 return true;
         }
@@ -37,10 +61,11 @@ class WelcomeScreen extends React.Component {
 
         const userEmail = await bridge.send("VKWebAppGetEmail", {});
         console.log(userEmail)
-
+        console.log("this.state.group_id", this.state.group_id)
         let user = {
             social_id: this.state.fetchedUser.id.toString(),
             email: userEmail.email,
+            group_id: this.state.group_id.toString(),
             telephone: userPhone.phone_number
         };
 
@@ -62,7 +87,12 @@ class WelcomeScreen extends React.Component {
 
     closePopout = () => {
         const props = this.props;
-        props.closePopout(false, )
+        props.closePopout(false)
+    }
+
+    onChange(e) {
+        const { name, value } = e.currentTarget;
+        this.setState({ [name]: value });
     }
 
     render() {
@@ -81,10 +111,12 @@ class WelcomeScreen extends React.Component {
                 break;
         }
 
+        const { group_id } = this.state;
+
         return (
             <Alert
                 actions={[{
-                    title: 'Я согласен',
+                    title: 'Сохранить',
                     autoclose: false,
                     action: () => this.createUser(),
                 }, {
@@ -94,15 +126,24 @@ class WelcomeScreen extends React.Component {
                     action: () => this.closePopout(),
                 }]}
             >
-                <h1>Здравствуйте!</h1>
-                Вы новый <b>{userType}</b> нашего приложения!
+                <h1>Выбор сообщества!</h1>
                 <div><br />
-                Подтвердите, что даёте согласие, на доступ приложения к информации о вашей учётной записи в социальной сети ВК. <br />Данная информация не будет передаваться третьим лицам.
-Мы храним только ID в социальной сети и мы не храним Ваш email и мобильный номер.
+                Пожалуйста, выберить сообщество связанное с учётной записью, которое представляет Ваш бизнес.
+                <br />
+                &nbsp;
                 </div>
+                <Select
+                    name="group_id"
+                    value={group_id}
+                    onChange={this.onChange}
+                >
+                    {this.state.groups && this.state.groups.map((group, index) => (
+                        <option key={group.id} value={group.id}>{group.name}</option>
+                    ))}
+                </Select>
             </Alert>
         )
     }
 }
 
-export default WelcomeScreen;
+export default SetBusinessGroup;

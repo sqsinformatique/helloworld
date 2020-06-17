@@ -71,7 +71,11 @@ class BusinessAllCourier extends React.Component {
     async componentDidMount() {
 		await this.fetchUser()
 		this.getBusinessOrders()
-	}
+    }
+    
+    componentWillUnmount() {
+        clearInterval(this.state.geoUpdateInterval)
+    }
 
     async fetchUser() {
 		let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/business/'
