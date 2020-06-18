@@ -2,6 +2,8 @@ import React from 'react';
 import { FormLayout, FormStatus, Panel, PanelHeader, Input, Button, Group, Cell, List, Header } from '@vkontakte/vkui';
 import { isValidPhone } from '../../modules/utils'
 
+import { getCuriersByBusinessID, postCreateBindingBusinessCourier, postDeleteBindingBusinessCourier } from '../../modules/backRequests'
+
 class BusinessOptions extends React.Component {
     constructor(props) {
         super(props);
@@ -15,66 +17,34 @@ class BusinessOptions extends React.Component {
         };
     }
 
-    async getMyCuriers() {
-        const props = this.props;
-        let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/business/curiers/'
-        let response = await fetch(url + props.user.business_id);
-        let json = await response.json();
-        this.setState({ couriers: json.result })
-    }
-
     async componentDidMount() {
-        this.getMyCuriers()
+        const { user } = this.props;
+        const response = await getCuriersByBusinessID(user.business_id)
+        if (response) {
+            this.setState({ couriers: response })
+        }
     }
 
     async createBinding() {
-        const props = this.props;
+        const { user } = this.props;
+        const { phone } = this.state;
 
-        let bindCurier = {
-            business_id: props.user.business_id,
-            phone: this.state.phone
-        };
+        await postCreateBindingBusinessCourier(user.business_id, phone)
 
-        console.log(bindCurier)
-
-        let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/business/bind_curier'
-        let response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(bindCurier)
-        });
-        if (response.ok) { // если HTTP-статус в диапазоне 200-299
-            // получаем тело ответа
-            let json = response.json();
-            console.log(json)
+        const response = await getCuriersByBusinessID(user.business_id)
+        if (response) {
+            this.setState({ couriers: response })
         }
-
-        await this.getMyCuriers()
     }
 
     async unbind(curier_id) {
-        const props = this.props;
+        const { user } = this.props;
 
-        let unbindCurier = {
-            business_id: props.user.business_id,
-            curier_id: curier_id
-        };
+        await postDeleteBindingBusinessCourier(user.business_id, curier_id)
 
-        console.log(unbindCurier)
-        let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/business/unbind_curier'
-        let response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(unbindCurier)
-        });
-        if (response.ok) { // если HTTP-статус в диапазоне 200-299
-            // получаем тело ответа
-            let json = response.json();
-            console.log(json)
+        const response = await getCuriersByBusinessID(user.business_id)
+        if (response) {
+            this.setState({ couriers: response })
         }
     }
 

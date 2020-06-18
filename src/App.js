@@ -1,33 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import { View, Epic, Tabbar, TabbarItem, Panel, PanelHeader } from '@vkontakte/vkui';
+import { View, Epic, Tabbar, TabbarItem } from '@vkontakte/vkui';
 import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
-import Icon28NewsfeedOutline from '@vkontakte/icons/dist/28/newsfeed_outline'
 import Icon28ListOutline from '@vkontakte/icons/dist/28/list_outline';
 import Icon28CompassOutline from '@vkontakte/icons/dist/28/compass_outline';
 import Icon28MarketAddBadgeOutline from '@vkontakte/icons/dist/28/market_add_badge_outline';
 import Icon28SettingsOutline from '@vkontakte/icons/dist/28/settings_outline';
 import Icon28CubeBoxOutline from '@vkontakte/icons/dist/28/cube_box_outline';
+import Icon24Notifications from '@vkontakte/icons/dist/24/notification';
+
+import { postCourierGeodata, getClientBySocialID, getCourierBySocialID, getBusinessBySocialID } from './modules/backRequests'
 
 import { ROUTES } from './Routes';
 
 import '@vkontakte/vkui/dist/vkui.css';
 
-
+// Главная страница
 import Home from './panels/Home';
-import Client from './panels/Client/Client';
-import Business from './panels/Business/Business';
-import BusinessOptions from './panels/Business/BusinessOptions';
+
+// Регистрация новых пользователей
 import WelcomeScreen from './panels/PopUpWindows/WelcomeScreen';
 import SetBusinessGroup from './panels/PopUpWindows/SetBusinessGroup'
-import BusinessNewOrder from './panels/Business/BusinessNewOrder';
+
+// Клиент
+import Client from './panels/Client/Client';
+import CourierGeodataForClient from './panels/Client/CourierGeodataForClient';
+
+// Курьер
 import Сourier from './panels/Courier/Сourier';
+import ClientGeodataForCourier from './panels/Courier/ClientGeodataForCourier';
 
-
-import GeodataClient from './panels/Geodata';
-import GeodataCourier from './panels/CourierGeodata';
-import GeodataBusiness from './panels/BusinessGeodata';
-import BusinessAllCourier from './panels/BusinessAllCourier';
+// Бизнес
+import Business from './panels/Business/Business';
+import BusinessOptions from './panels/Business/BusinessOptions';
+import BusinessNewOrder from './panels/Business/BusinessNewOrder';
+import CourierGeodataForBusiness from './panels/Business/CourierGeodataForBusiness';
+import BusinessAllCourier from './panels/Business/BusinessAllCourier';
 
 
 const location = window.location.hash.substr(1);
@@ -52,43 +60,26 @@ class App extends React.Component {
 
 		this.state.geoUpdateInterval = setInterval(() => {
 			this.fetchCourierGeo()
-			// console.log("tick")
 		}, 5000);
-
-		// получаем координаты курьера
-		// const geodata = await bridge.send('VKWebAppGetGeodata');
-		// this.setState({ courier_geodata: geodata });
-
 	}
 
 	async fetchCourierGeo() {
-		if (this.state.activePanel === 'courier' || this.state.activePanel === 'view_where_client') {
-			// получаем координаты курьера
-			const geodata = await bridge.send('VKWebAppGetGeodata');
-			this.setState({ courier_geodata: geodata });
+		switch (this.state.activePanel) {
+			case 'courier':
+			case 'view_where_client':
+				// Запрашиваем координаты курьера, если находимся на панелях courier или view_where_client
+				// Надо также дополнить всеми остальными панелями курьера, чтобы координаты передавались всё
+				// время, пока мы в режиме Курьера
+				const geodata = await bridge.send('VKWebAppGetGeodata');
+				this.setState({ courier_geodata: geodata });
 
-			if (!this.state.user) {
-				return
-			}
-			let curiergeo = {
-				curier_id: this.state.user.curier_id,
-				lat: geodata.lat,
-				long: geodata.long,
-			};
+				if (!this.state.user) {
+					return
+				}
 
-			let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/curiers/geo'
-			let response = await fetch(url, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json;charset=utf-8'
-				},
-				body: JSON.stringify(curiergeo)
-			});
-			if (response.ok) { // если HTTP-статус в диапазоне 200-299
-				// получаем тело ответа
-				let json = response.json();
-				console.log(json)
-			}
+				await postCourierGeodata(this.state.user.curier_id, { lat: geodata.lat, long: geodata.long })
+				break;
+			default:
 		}
 	}
 
@@ -102,6 +93,7 @@ class App extends React.Component {
 	}
 
 	setLocation = (route) => {
+		console.log("route", route)
 		if (route !== 'home') {
 			bridge.send('VKWebAppSetLocation', { location: route });
 		} else {
@@ -111,28 +103,27 @@ class App extends React.Component {
 
 	// Проверяем, есть ли такой пользователь у нас на бэке
 	async fetchUser(userType) {
-		let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/'
+		const { fetchedUser } = this.state
+		let response
 		switch (userType) {
 			case 'client':
-				url = url + 'clients/'
+				response = await getClientBySocialID(fetchedUser.id)
 				break;
 			case 'courier':
-				url = url + 'curiers/'
+				response = await getCourierBySocialID(fetchedUser.id)
 				break;
 			case 'business':
-				url = url + 'business/'
+				response = await getBusinessBySocialID(fetchedUser.id)
 				break;
 			default:
 				return true;
 		}
 
-		let response = await fetch(url + this.state.fetchedUser.id);
-		if (response.ok) { // если HTTP-статус в диапазоне 200-299
-			let json = await response.json();
-			this.setState({ user: json.result })
-
+		if (response) {
+			this.setState({ user: response })
 			return true;
 		}
+
 		this.setState({ popout: <WelcomeScreen userType={userType} fetchedUser={this.state.fetchedUser} closePopout={this.closePopout} /> })
 		return false;
 	}
@@ -234,6 +225,7 @@ class App extends React.Component {
 					><Icon28SettingsOutline /></TabbarItem>
 				</Tabbar>
 				break;
+			default:
 		}
 
 		return tabbarApp
@@ -248,9 +240,9 @@ class App extends React.Component {
 					<Client id='client' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 					<Сourier id='courier' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 					<Business id='business' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
-					<GeodataClient id='view_where_courier' order={this.state.client_order} go={this.go} />
-					<GeodataCourier id='view_where_client' order={this.state.courier_order} courier_geodata={this.state.courier_geodata} go={this.go} />
-					<GeodataBusiness id='view_where_courier_for_business' order={this.state.client_order_for_business} go={this.go} />
+					<CourierGeodataForClient id='view_where_courier' order={this.state.client_order} go={this.go} />
+					<ClientGeodataForCourier id='view_where_client' order={this.state.courier_order} courier_geodata={this.state.courier_geodata} go={this.go} />
+					<CourierGeodataForBusiness id='view_where_courier_for_business' order={this.state.client_order_for_business} go={this.go} />
 				</View>
 				<View id="business_couriers_onmap" activePanel="business_couriers_onmap">
 					<BusinessAllCourier id="business_couriers_onmap" user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />

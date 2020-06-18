@@ -5,7 +5,6 @@ import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 import Cell from '@vkontakte/vkui/dist/components/Cell/Cell';
 import Div from '@vkontakte/vkui/dist/components/Div/Div';
-import Avatar from '@vkontakte/vkui/dist/components/Avatar/Avatar';
 import Icon28UserOutline from '@vkontakte/icons/dist/28/user_outline'
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import Icon28CubeBoxOutline from '@vkontakte/icons/dist/28/cube_box_outline'

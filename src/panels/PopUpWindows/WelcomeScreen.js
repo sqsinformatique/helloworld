@@ -1,7 +1,6 @@
 import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import PropTypes from 'prop-types';
-import { PopoutWrapper, Button, Alert } from '@vkontakte/vkui';
+import { Alert } from '@vkontakte/vkui';
 
 class WelcomeScreen extends React.Component {
     constructor(props) {
@@ -62,7 +61,7 @@ class WelcomeScreen extends React.Component {
 
     closePopout = () => {
         const props = this.props;
-        props.closePopout(false, )
+        props.closePopout(false,)
     }
 
     render() {
@@ -79,6 +78,7 @@ class WelcomeScreen extends React.Component {
             case 'business':
                 userType = 'бизнес-партнёр'
                 break;
+            default:
         }
 
         return (

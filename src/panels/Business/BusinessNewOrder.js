@@ -9,6 +9,8 @@ import Icon24Back from '@vkontakte/icons/dist/24/back';
 import { Button, FormLayout, Input, Textarea, Select, FormLayoutGroup } from '@vkontakte/vkui';
 import { isValidPhone } from '../../modules/utils'
 
+import { postCreateOrder, getCuriersByBusinessID } from '../../modules/backRequests'
+
 import './Business.css';
 
 const osName = platform();
@@ -19,84 +21,51 @@ class BusinessNewOrder extends React.Component {
 
         this.state = {
             fetchedUser: null,
+            order: {
+                description: '',
+                email: '',
+                phone: '',
+                order_number: '',
+                address: '',
+                order_date: '',
+                order_time_begin: '',
+                order_time_end: '',
+                curier_id: 0,
+            },
             user: props.user,
             couriers: null,
-            email: '',
-            phone: '',
-            order_number: '',
-            address: '',
-            description: '',
-            order_date: '',
-            order_time_begin: '',
-            order_time_end: '',
-            curier_id: 0,
         };
-
-        console.log("user courier", props.user)
 
         this.onChange = this.onChange.bind(this);
     }
 
-    async getMyCuriers() {
-        const props = this.props;
-        let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/business/curiers/'
-        let response = await fetch(url + props.user.business_id);
-        let json = await response.json();
-        this.setState({ couriers: json.result })
-        if (this.state.couriers && this.state.couriers.length > 0) {
-            this.setState({ curier_id: this.state.couriers[0].curier_id })
-        }
-    }
-
     async componentDidMount() {
-        this.getMyCuriers()
+        const { user } = this.props;
+        const response = await getCuriersByBusinessID(user.business_id)
+        if (response) {
+            this.setState({ couriers: response })
+            if (response.length > 0) {
+                this.setState({ curier_id: response[0].curier_id })
+            }
+        }
     }
 
     onChange(e) {
         const { name, value } = e.currentTarget;
-        this.setState({ [name]: value });
-    }
-
-    async createOrder() {
-        const props = this.props;
-
-        let order = {
-            business_id: props.user.business_id,
-            curier_id: this.state.curier_id,
-            email: this.state.email,
-            telephone: this.state.phone,
-            order_number: this.state.order_number,
-            order_address: this.state.address,
-            order_description: this.state.description,
-            order_date: new Date(Date.parse(this.state.order_date)).toJSON(),
-            order_time_begin: this.state.order_time_begin,
-            order_time_end: this.state.order_time_end,
-            order_state: 'to_delivery',
-        }
-        console.log(order)
-
-        let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/orders'
-        let response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(order)
-        });
-        if (response.ok) { // если HTTP-статус в диапазоне 200-299
-            // получаем тело ответа
-            let json = response.json();
-            console.log(json)
-        }
+        const order = { ...this.state.order, ...{ [name]: value } }
+        this.setState({ order: order });
+        console.log(this.state.order)
     }
 
     createOrderHandler = () => {
-        this.createOrder()
+        const { user } = this.props
+        const { order } = this.state
+        postCreateOrder(user.business_id, order)
     }
 
     render() {
         const props = this.props;
-        const { email, phone, address, order_number, description, curier_id, order_date, order_time_begin, order_time_end } = this.state;
+        const { email, phone, address, order_number, description, curier_id, order_date, order_time_begin, order_time_end } = this.state.order;
         return (
             <Panel id={props.id}>
                 <PanelHeader
@@ -119,7 +88,7 @@ class BusinessNewOrder extends React.Component {
                         name="phone"
                         value={phone}
                         onChange={this.onChange}
-                        // keyboardType={'phone-pad'}
+                    // keyboardType={'phone-pad'}
                     />
                     <Input
                         type="email"

@@ -1,7 +1,6 @@
 import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import PropTypes from 'prop-types';
-import { PopoutWrapper, Button, Alert, Select } from '@vkontakte/vkui';
+import { Alert, Select } from '@vkontakte/vkui';
 
 class SetBusinessGroup extends React.Component {
     constructor(props) {
@@ -109,6 +108,7 @@ class SetBusinessGroup extends React.Component {
             case 'business':
                 userType = 'бизнес-партнёр'
                 break;
+            default:
         }
 
         const { group_id } = this.state;

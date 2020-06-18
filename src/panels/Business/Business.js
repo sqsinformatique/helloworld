@@ -10,6 +10,9 @@ import { RichCell, Button, Avatar } from '@vkontakte/vkui';
 import Header from '@vkontakte/vkui/dist/components/Header/Header';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 
+import { postSearchOrdersByBusinessID, getBusinessBySocialID } from '../../modules/backRequests'
+import { orderStateToString, fullOrderDate } from '../../modules/parseTypes'
+
 import './Business.css';
 
 const osName = platform();
@@ -26,66 +29,27 @@ class Business extends React.Component {
 	}
 	
 	async componentDidMount() {
-		await this.fetchUser()
-		this.getBusinessOrders()
+		await this.getBusiness()
+		await this.getBusinessOrders()
 	}
 
-	async fetchUser() {
-		let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/business/'
-
-		let response = await fetch(url + this.state.fetchedUser.id);
-		if (response.ok) { // если HTTP-статус в диапазоне 200-299
-			let json = await response.json();
-			this.setState({ user: json.result })
+	async getBusiness() {
+		const { fetchedUser } = this.state
+		let response = await getBusinessBySocialID(fetchedUser.id)
+		if (response) {
+			this.setState({ user: response })
 		}
 	}
 
 	async getBusinessOrders() {
-		if (!this.state.user) {
+		const { user } = this.state
+		if (!user) {
 			return
 		}
 
-		const props = this.props;
-
-		console.log(props.user)
-
-		if (!props.user) {
-			return
-		}
-
-		let requestOrder = [
-			{
-				business_id: props.user.business_id,
-			}
-		]
-		console.log(requestOrder)
-
-		let url = 'https://sqsinformatique-vk-back.ngrok.io/api/v1/orders/search'
-		let response = await fetch(url, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json;charset=utf-8'
-			},
-			body: JSON.stringify(requestOrder)
-		});
-		if (response.ok) { // если HTTP-статус в диапазоне 200-299
-			// получаем тело ответа
-			let json = await response.json();
-			console.log(json)
-			this.setState({ orders: json.result })
-		}
-	}
-
-	fullOrderDate(order) {
-		return order.order_date + " с " + order.order_time_begin + " до " + order.order_time_end
-	}
-
-	orderStateToString(state) {
-		switch (state) {
-			case 'to_delivery':
-				return 'В доставке'
-			default:
-				return 'Не известное состояние'
+		let response = await postSearchOrdersByBusinessID(user.business_id)
+		if (response) {
+			this.setState({ orders: response })
 		}
 	}
 
@@ -105,10 +69,10 @@ class Business extends React.Component {
 						<RichCell key={order.order_number}
 							disabled
 							multiline
-							before={<Avatar size={72} />} // src={getAvatarUrl('user_ti')}
+							before={<Avatar size={72} src={order.curier_photo_100}/>} // src={getAvatarUrl('user_ti')}
 							text={"Курьер " + order.curier_name}
-							caption={this.fullOrderDate(order)}
-							after={this.orderStateToString(order.order_state)}
+							caption={fullOrderDate(order)}
+							after={orderStateToString(order.order_state)}
 							actions={
 								<React.Fragment>
 									<Button onClick={(e) => props.go(e, order)} data-to="view_where_courier_for_business">Курьер на карте</Button>
