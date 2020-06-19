@@ -32,6 +32,7 @@ class BusinessNewOrder extends React.Component {
                 order_time_end: '',
                 curier_id: 0,
             },
+            selected_curier: 0,
             user: props.user,
             couriers: null,
         };
@@ -45,15 +46,24 @@ class BusinessNewOrder extends React.Component {
         if (response) {
             this.setState({ couriers: response })
             if (response.length > 0) {
-                this.setState({ curier_id: response[0].curier_id })
+                const order = { curier_id: response[0].curier_id }
+                this.setState({ order: order })
+                console.log()
             }
         }
     }
 
     onChange(e) {
         const { name, value } = e.currentTarget;
-        const order = { ...this.state.order, ...{ [name]: value } }
-        this.setState({ order: order });
+        let order
+        if (name === 'curier_id') {
+            const courier = this.state.couriers[value]
+            this.state.order.curier_id = courier.curier_id
+            this.setState({ selected_curier: value })
+        } else {
+            order = { ...this.state.order, ...{ [name]: value } }
+            this.setState({ order: order });
+        }
         console.log(this.state.order)
     }
 
@@ -135,11 +145,11 @@ class BusinessNewOrder extends React.Component {
                     <Select
                         top="Выбрать курьера"
                         name="curier_id"
-                        value={curier_id}
+                        value={this.state.selected_curier}
                         onChange={this.onChange}
                     >
                         {this.state.couriers && this.state.couriers.map((courier, index) => (
-                            <option key={courier.curier_id} value={courier.curier_id}>{courier.first_name} {courier.last_name}</option>
+                            <option key={index} value={index}>{courier.first_name} {courier.last_name}</option>
                         ))}
                     </Select>
                     <Button size="xl" onClick={this.createOrderHandler}>Создать заказ</Button>
