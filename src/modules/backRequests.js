@@ -123,7 +123,7 @@ export async function postSearchOrdersByCourierID(courier_id) {
 export async function postCreateOrder(business_id, order) {
 	let createOrderRequest = {
 		business_id: business_id,
-		curier_id: order.curier_id,
+		curier_id: Number(order.curier_id),
 		email: order.email,
 		telephone: order.phone,
 		order_number: order.order_number,

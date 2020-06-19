@@ -175,6 +175,12 @@ class App extends React.Component {
 					><Icon28CubeBoxOutline /></TabbarItem>
 					<TabbarItem
 						onClick={this.onStoryChange}
+						selected={this.state.activeStory === 'client_add_order'}
+						data-story="cient_add_order"
+						text="Новый заказ"
+					><Icon28MarketAddBadgeOutline /></TabbarItem>
+					<TabbarItem
+						onClick={this.onStoryChange}
 						selected={this.state.activeStory === 'client_options'}
 						data-story="client_options"
 						text="Настройки"
