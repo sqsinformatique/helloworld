@@ -6,7 +6,7 @@ import Icon24Back from '@vkontakte/icons/dist/24/back';
 
 const osName = platform();
 
-class ClientOptions extends React.Component {
+class CourierOptions extends React.Component {
     constructor(props) {
         super(props);
 
@@ -26,11 +26,11 @@ class ClientOptions extends React.Component {
                     {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
                 </PanelHeaderButton>}
                 >
-                    Клиент: настройки
+                    Настройки
 				</PanelHeader>
              </Panel>
         );
     }
 }
 
-export default ClientOptions;
+export default CourierOptions;

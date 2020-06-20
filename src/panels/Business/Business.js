@@ -6,7 +6,7 @@ import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
-import { RichCell, Button, Avatar } from '@vkontakte/vkui';
+import { RichCell, Button, Avatar, PanelSpinner } from '@vkontakte/vkui';
 import Header from '@vkontakte/vkui/dist/components/Header/Header';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 
@@ -62,9 +62,10 @@ class Business extends React.Component {
 						{osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
 					</PanelHeaderButton>}
 				>
-					Бизнес
+					Бизнес: заказы у курьеров
 				</PanelHeader>
-				<Group header={<Header>У курьера</Header>}>
+				{/* header={<Header>У курьера</Header>} */}
+				{!this.state.orders ? <PanelSpinner size='large' /> :  <Group > 
 					{this.state.orders && this.state.orders.map((order) =>
 						<RichCell key={order.order_number}
 							disabled
@@ -84,7 +85,7 @@ class Business extends React.Component {
 						</RichCell>
 					)
 					}
-				</Group>
+				</Group>}
 			</Panel>
 		);
 	}

@@ -1,8 +1,13 @@
 import React from 'react';
-import { FormLayout, FormStatus, Panel, PanelHeader, Input, Button, Group, Cell, List, Header } from '@vkontakte/vkui';
-import { isValidPhone } from '../../modules/utils'
+import { platform, IOS } from '@vkontakte/vkui';
+import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
+import Icon24Back from '@vkontakte/icons/dist/24/back';
+import { FormLayout, FormStatus, Panel, PanelHeader, Input, Button, Group, Cell, List, Header, PanelHeaderButton } from '@vkontakte/vkui';
+import { isValidPhone, trim } from '../../modules/utils'
 
 import { getCuriersByBusinessID, postCreateBindingBusinessCourier, postDeleteBindingBusinessCourier } from '../../modules/backRequests'
+
+const osName = platform();
 
 class BusinessOptions extends React.Component {
     constructor(props) {
@@ -29,7 +34,7 @@ class BusinessOptions extends React.Component {
         const { user } = this.props;
         const { phone } = this.state;
 
-        await postCreateBindingBusinessCourier(user.business_id, phone)
+        await postCreateBindingBusinessCourier(user.business_id, trim(phone, '+'))
 
         const response = await getCuriersByBusinessID(user.business_id)
         if (response) {
@@ -79,11 +84,11 @@ class BusinessOptions extends React.Component {
         return (
             <Panel id={props.id}>
                 <PanelHeader
-                // left={<PanelHeaderButton onClick={props.go} data-to="home">
-                //     {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
-                // </PanelHeaderButton>}
+                    left={<PanelHeaderButton onClick={props.go} data-to="home">
+                        {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
+                    </PanelHeaderButton>}
                 >
-                    Настройки
+                    Бизнес: настройки
 				</PanelHeader>
                 {this.state.couriers &&
                     <Group header={<Header mode="secondary">Мои курьеры</Header>}>

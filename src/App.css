@@ -1,0 +1,11 @@
+.header .header__logo {
+    display: flex;
+    margin: auto;
+    padding: 10px;
+    height: 150px;
+  }
+  
+  .header .header__shuffle {
+    display: flex;
+    margin: auto;
+  }

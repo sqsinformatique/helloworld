@@ -48,12 +48,12 @@ class CourierGeodataForClient extends React.Component {
         return (
             <Panel id={id}>
                 <PanelHeader
-                    left={<PanelHeaderButton onClick={this.props.go} data-to="client">
+                    left={<PanelHeaderButton onClick={this.props.go} data-to="client_orders_ondelivery">
                         {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
                     </PanelHeaderButton>}
                 // right={miniPanel}
                 >
-                    Курьер на карте
+                    Клиент: курьер на карте
                 </PanelHeader>
                 <RichCell
                     disabled

@@ -92,12 +92,12 @@ class BusinessAllCourier extends React.Component {
         return (
             <Panel id={props.id}>
                 <PanelHeader
-                    left={<PanelHeaderButton onClick={this.props.go} data-to="business">
+                    left={<PanelHeaderButton onClick={this.props.go} data-to="home">
                         {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
                     </PanelHeaderButton>}
                 // right={miniPanel}
                 >
-                    Курьеры {props.business_name}
+                    Бизнес: курьеры на карте 
                 </PanelHeader>
                 <YMaps query={{ apikey: '482da132-c4be-476f-95ef-79ba61d579a4', load: ['util.bounds', 'control.ZoomControl'] }} >
                     <Map width="100vw" height="100vh" defaultState={mapState} className='mapview' onLoad={ymaps => this.setYmaps(ymaps)}>

@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
-import Cell from '@vkontakte/vkui/dist/components/Cell/Cell';
+import Button from '@vkontakte/vkui/dist/components/Cell/Cell';
 import Div from '@vkontakte/vkui/dist/components/Div/Div';
 import Icon28UserOutline from '@vkontakte/icons/dist/28/user_outline'
 import Icon28MarketOutline from '@vkontakte/icons/dist/28/market_outline';
 import Icon28CubeBoxOutline from '@vkontakte/icons/dist/28/cube_box_outline'
+
+import './Home.css';
 
 const Home = ({ id, go, fetchedUser }) => (
 	<Panel id={id}>
@@ -22,18 +24,16 @@ const Home = ({ id, go, fetchedUser }) => (
 			</Cell>
 		</Group>} */}
 
-		<Group title="Navigation Example">
-			<Div>
-				<Cell expandable before={<Icon28UserOutline/>} onClick={go} data-to="client">
-					Я клиент
-				</Cell>
-				<Cell expandable before={<Icon28MarketOutline/>} onClick={go} data-to="courier">
-					Я курьер
-				</Cell>
-				<Cell expandable before={<Icon28CubeBoxOutline/>} onClick={go} data-to="business">
-					Я бизнес
-				</Cell>
-			</Div>
+		<Group title="Стартовый экран">
+				<Div>
+					<Button className="header__shuffle" level="1" size="xl" onClick={go} data-to="client">Я клиент</Button>
+				</Div>
+				<Div>
+					<Button size="xl" onClick={go} data-to="courier">Я курьер</Button>
+				</Div>
+				<Div>
+					<Button size="xl" onClick={go} data-to="business">Я бизнес</Button>
+				</Div>
 		</Group>
 	</Panel>
 );

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { platform, IOS, ANDROID } from '@vkontakte/vkui';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
-import { PanelHeader, Header, RichCell, Button, Avatar } from '@vkontakte/vkui';
+import { PanelHeader, Header, RichCell, Button, Avatar, PanelSpinner } from '@vkontakte/vkui';
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
@@ -69,9 +69,11 @@ class Client extends React.Component {
 					</PanelHeaderButton>}
 				// right={miniPanel}
 				>
-					Клиент
+					Клиент: мне везут
 					</PanelHeader>
-				<Group header={<Header>Мне везут</Header>}>
+					{/* header={<Header>Мне везут</Header>} */}
+				
+				{!this.state.orders ? <PanelSpinner size='large' /> : <Group >
 					{this.state.orders && this.state.orders.map((order) =>
 						<RichCell
 							key={order.order_number}
@@ -92,7 +94,7 @@ class Client extends React.Component {
 						</RichCell>
 					)
 					}
-				</Group>
+				</Group>}
 			</Panel>
 		);
 	}

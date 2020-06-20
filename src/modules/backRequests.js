@@ -1,3 +1,5 @@
+import { isValidPhone, trim } from './utils'
+
 const back_url = 'https://sqsinformatique-vk-back.ngrok.io'
 
 // Курьеры
@@ -126,7 +128,7 @@ export async function postCreateOrder(business_id, order) {
 		curier_id: Number(order.curier_id),
 		email: order.email,
 		telephone: order.phone,
-		order_number: order.order_number,
+		order_number: trim(order.order_number, '+'),
 		order_address: order.address,
 		order_description: order.description,
 		order_date: new Date(Date.parse(order.order_date)).toJSON(),

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelHeader, PanelHeaderButton, platform, IOS } from '@vkontakte/vkui';
+import { Panel, PanelHeader, PanelHeaderButton, platform, IOS, PanelSpinner } from '@vkontakte/vkui';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 import Header from '@vkontakte/vkui/dist/components/Header/Header';
@@ -61,9 +61,10 @@ class Сourier extends React.Component {
 						</PanelHeaderButton>
 					}
 				>
-					Курьер
+					Курьер: я везу
       			</PanelHeader>
-				<Group header={<Header>Я везу</Header>}>
+				  {/* header={<Header>Я везу</Header>} */}
+				  {!this.state.orders ? <PanelSpinner size='large' /> :  <Group >
 					{this.state.orders && this.state.orders.map((order) =>
 						<RichCell
 							key={order.order_number}
@@ -84,7 +85,7 @@ class Сourier extends React.Component {
 						</RichCell>
 					)
 					}
-				</Group>
+				</Group>}
 			</Panel>
 		);
 	}

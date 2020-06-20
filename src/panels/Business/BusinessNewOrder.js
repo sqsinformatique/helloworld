@@ -5,13 +5,19 @@ import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
+import Icon16Done from '@vkontakte/icons/dist/16/done';
+import Icon16Clear from '@vkontakte/icons/dist/16/clear';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
-import { Button, FormLayout, Input, Textarea, Select, FormLayoutGroup } from '@vkontakte/vkui';
-import { isValidPhone } from '../../modules/utils'
+import { Button, FormLayout, Input, Textarea, Select, FormLayoutGroup, Avatar, Snackbar } from '@vkontakte/vkui';
+import { isValidPhone, trim } from '../../modules/utils'
 
 import { postCreateOrder, getCuriersByBusinessID } from '../../modules/backRequests'
 
 import './Business.css';
+
+const blueBackground = {
+    backgroundColor: 'var(--accent)'
+};
 
 const osName = platform();
 
@@ -19,7 +25,14 @@ class BusinessNewOrder extends React.Component {
     constructor(props) {
         super(props);
 
+        var now = new Date();
+        var mm = now.getMonth() + 1; // getMonth() is zero-based
+        var dd = now.getDate();
+        var hh = now.getHours()
+        const nowString = now.getFullYear() + "-" + (mm > 9 ? '' : '0') + mm + "-" + (dd > 9 ? '' : '0') + dd
+
         this.state = {
+            snackbar: null,
             fetchedUser: null,
             order: {
                 description: '',
@@ -27,9 +40,9 @@ class BusinessNewOrder extends React.Component {
                 phone: '',
                 order_number: '',
                 address: '',
-                order_date: '',
-                order_time_begin: '',
-                order_time_end: '',
+                order_date: nowString,
+                order_time_begin: (hh > 9 ? '' : '0') + hh + ":00",
+                order_time_end: (hh + 1 > 9 ? '' : '0') + (hh + 1) + ":00",
                 curier_id: 0,
             },
             selected_curier: 0,
@@ -38,6 +51,8 @@ class BusinessNewOrder extends React.Component {
         };
 
         this.onChange = this.onChange.bind(this);
+        this.openSaveOk = this.openSaveOk.bind(this);
+        this.openSaveFail = this.openSaveFail.bind(this);
     }
 
     async componentDidMount() {
@@ -46,9 +61,21 @@ class BusinessNewOrder extends React.Component {
         if (response) {
             this.setState({ couriers: response })
             if (response.length > 0) {
-                const order = { curier_id: response[0].curier_id }
+                var now = new Date();
+                var mm = now.getMonth() + 1; // getMonth() is zero-based
+                var dd = now.getDate();
+                var hh = now.getHours()
+                const nowString = now.getFullYear() + "-" + (mm > 9 ? '' : '0') + mm + "-" + (dd > 9 ? '' : '0') + dd
+
+                const order = {
+                    curier_id: response[0].curier_id,
+                    order_date: nowString,
+                    order_time_begin: (hh > 9 ? '' : '0') + hh + ":00",
+                    order_time_end: (hh + 1 > 9 ? '' : '0') + (hh + 1) + ":00",
+                }
+
+
                 this.setState({ order: order })
-                console.log()
             }
         }
     }
@@ -67,10 +94,43 @@ class BusinessNewOrder extends React.Component {
         console.log(this.state.order)
     }
 
+    openSaveOk() {
+        if (this.state.snackbar) return;
+        this.setState({
+            snackbar:
+                <Snackbar
+                    layout="vertical"
+                    onClose={() => this.setState({ snackbar: null })}
+                    before={<Avatar size={24} style={blueBackground}><Icon16Done fill="#fff" width={14} height={14} /></Avatar>}
+                >
+                    Заказ сохранён
+          </Snackbar>
+        });
+    }
+
+    openSaveFail() {
+        if (this.state.snackbar) return;
+        this.setState({
+            snackbar:
+                <Snackbar
+                    layout="vertical"
+                    onClose={() => this.setState({ snackbar: null })}
+                    before={<Avatar size={24} style={blueBackground}><Icon16Clear fill="#fff" width={14} height={14} /></Avatar>}
+                >
+                    Ошибка сохранения!
+          </Snackbar>
+        });
+    }
+
     createOrderHandler = () => {
         const { user } = this.props
         const { order } = this.state
-        postCreateOrder(user.business_id, order)
+        const response = postCreateOrder(user.business_id, order)
+        if (response) {
+            this.openSaveOk()
+        } else {
+            this.openSaveFail()
+        }
     }
 
     render() {
@@ -79,11 +139,11 @@ class BusinessNewOrder extends React.Component {
         return (
             <Panel id={props.id}>
                 <PanelHeader
-                    left={<PanelHeaderButton onClick={props.go} data-to="business">
+                    left={<PanelHeaderButton onClick={props.go} data-to="home">
                         {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
                     </PanelHeaderButton>}
                 >
-                    {[props.business_name]}
+                    Бизнес: новый заказ
                 </PanelHeader>
                 <FormLayout>
                     <Input
@@ -154,6 +214,7 @@ class BusinessNewOrder extends React.Component {
                     </Select>
                     <Button size="xl" onClick={this.createOrderHandler}>Создать заказ</Button>
                 </FormLayout>
+                {this.state.snackbar}
             </Panel>
         );
     }
