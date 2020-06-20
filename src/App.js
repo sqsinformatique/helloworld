@@ -112,6 +112,7 @@ class App extends React.Component {
 
 	// Проверяем, есть ли такой пользователь у нас на бэке
 	async fetchUser(userType) {
+		console.log("userType", userType)
 		const { fetchedUser } = this.state
 		let response
 		switch (userType) {
@@ -140,7 +141,7 @@ class App extends React.Component {
 	closePopout = (result, userType) => {
 		console.log(result)
 		if (!result) {
-			this.setState({ popout: null, activePanel: 'home' });
+			this.setState({ popout: null, show_user_menu: 'none',  activePanel: 'home' });
 		} else {
 			if (userType === 'business') {
 				this.setState({ popout: <SetBusinessGroup userType={userType} fetchedUser={this.state.fetchedUser} closePopout={this.closePopout} /> })
@@ -202,7 +203,7 @@ class App extends React.Component {
 							text="Настройки"
 						><Icon28SettingsOutline /></TabbarItem>
 					</Tabbar >}>
-					< View id='client_orders_ondelivery' activePanel={this.state.activePanel} >
+					< View id='client_orders_ondelivery' activePanel={this.state.activePanel} popout={this.state.popout}>
 						<Client id='client_orders_ondelivery' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 						<CourierGeodataForClient id='view_where_courier' order={this.state.client_order} go={this.go} />
 					</View >
@@ -227,7 +228,7 @@ class App extends React.Component {
 							text="Настройки"
 						><Icon28SettingsOutline /></TabbarItem>
 					</Tabbar >}>
-					<View id='client_orders_ondelivery' activePanel={this.state.activePanel}>
+					<View id='client_orders_ondelivery' activePanel={this.state.activePanel} popout={this.state.popout}>
 						<Сourier id='client_orders_ondelivery' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 						<ClientGeodataForCourier id='view_where_client' order={this.state.courier_order} courier_geodata={this.state.courier_geodata} go={this.go} />
 					</View>
@@ -264,7 +265,7 @@ class App extends React.Component {
 							text="Настройки"
 						><Icon28SettingsOutline /></TabbarItem>
 					</Tabbar>}>
-					< View id='client_orders_ondelivery' activePanel={this.state.activePanel} >
+					< View id='client_orders_ondelivery' activePanel={this.state.activePanel} popout={this.state.popout}>
 						<Business id='client_orders_ondelivery' user={user} fetchedUser={this.state.fetchedUser} go={this.go} />
 						<CourierGeodataForBusiness id='view_where_courier_for_business' order={this.state.client_order_for_business} go={this.go} />
 					</View >

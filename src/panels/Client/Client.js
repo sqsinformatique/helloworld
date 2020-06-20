@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { platform, IOS, ANDROID } from '@vkontakte/vkui';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
-import { PanelHeader, Header, RichCell, Button, Avatar, PanelSpinner } from '@vkontakte/vkui';
+import { PanelHeader, Header, RichCell, Button, Avatar, PanelSpinner, CardGrid, Card } from '@vkontakte/vkui';
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
@@ -71,8 +71,8 @@ class Client extends React.Component {
 				>
 					Клиент: мне везут
 					</PanelHeader>
-					{/* header={<Header>Мне везут</Header>} */}
-				
+				{/* header={<Header>Мне везут</Header>} */}
+
 				{!this.state.orders ? <PanelSpinner size='large' /> : <Group >
 					{this.state.orders && this.state.orders.map((order) =>
 						<RichCell
@@ -93,6 +93,14 @@ class Client extends React.Component {
 							{order.order_number}
 						</RichCell>
 					)
+					}
+					{(this.state.orders && this.state.orders.length === 0) ? <CardGrid>
+						<Card size="l">
+							<div style={{ height: 96, fontSize: 30, textAlign: "center" }} >
+								Заказов нет
+						</div>
+						</Card>
+					</CardGrid> : <div />
 					}
 				</Group>}
 			</Panel>

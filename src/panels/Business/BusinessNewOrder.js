@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import bridge from '@vkontakte/vk-bridge';
 import { platform, IOS } from '@vkontakte/vkui';
 import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
 import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
@@ -9,7 +10,7 @@ import Icon16Done from '@vkontakte/icons/dist/16/done';
 import Icon16Clear from '@vkontakte/icons/dist/16/clear';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 import { Button, FormLayout, Input, Textarea, Select, FormLayoutGroup, Avatar, Snackbar } from '@vkontakte/vkui';
-import { isValidPhone, trim } from '../../modules/utils'
+import { isValidPhone, trim, randomInteger } from '../../modules/utils'
 
 import { postCreateOrder, getCuriersByBusinessID } from '../../modules/backRequests'
 
@@ -122,11 +123,33 @@ class BusinessNewOrder extends React.Component {
         });
     }
 
+
+    // Тест!
+    async sendMessagetoClient() {
+        const rndID = randomInteger(1, 1000000000)
+        const result = await bridge.send("VKWebAppCallAPIMethod", {
+            "method": "messages.send",
+            "request_id": "12335",
+            "params": {
+                "user_id": "600629237",
+                "v": "5.110",
+                "random_id": rndID,
+                "peer_id": "600629237",
+                "message": "создан заказ",
+                "access_token": "419610b0bee9752de2b6f00bd58226703377b2e0b894809bb2b7b5f141c6a412711ac531d10edb4fd8e23"
+            }
+        });
+
+        console.log("sendMessagetoClient", result)
+
+    }
+
     createOrderHandler = () => {
         const { user } = this.props
         const { order } = this.state
         const response = postCreateOrder(user.business_id, order)
         if (response) {
+            this.sendMessagetoClient()
             this.openSaveOk()
         } else {
             this.openSaveFail()

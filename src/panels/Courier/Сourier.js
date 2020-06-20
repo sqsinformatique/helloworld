@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelHeader, PanelHeaderButton, platform, IOS, PanelSpinner } from '@vkontakte/vkui';
+import { Panel, PanelHeader, PanelHeaderButton, platform, IOS, PanelSpinner, Card, CardGrid } from '@vkontakte/vkui';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 import Header from '@vkontakte/vkui/dist/components/Header/Header';
@@ -63,8 +63,8 @@ class Сourier extends React.Component {
 				>
 					Курьер: я везу
       			</PanelHeader>
-				  {/* header={<Header>Я везу</Header>} */}
-				  {!this.state.orders ? <PanelSpinner size='large' /> :  <Group >
+				{/* header={<Header>Я везу</Header>} */}
+				{!this.state.orders ? <PanelSpinner size='large' /> : <Group >
 					{this.state.orders && this.state.orders.map((order) =>
 						<RichCell
 							key={order.order_number}
@@ -73,7 +73,7 @@ class Сourier extends React.Component {
 							before={<Avatar size={72} src={order.photo_100} />} // src={getAvatarUrl('user_ti')}
 							text={order.business_name}
 							caption={fullOrderDate(order)}
-							after={orderStateToString(order.order_state)}
+							after={<Button backgroundColor="green">{orderStateToString(order.order_state)}</Button>}
 							actions={
 								<React.Fragment>
 									<Button onClick={(e) => props.go(e, order)} data-to="view_where_client">Адрес на карте</Button>
@@ -85,6 +85,15 @@ class Сourier extends React.Component {
 						</RichCell>
 					)
 					}
+					{(this.state.orders && this.state.orders.length === 0) ? <CardGrid>
+						<Card size="l">
+							<div style={{ height: 96, fontSize: 30, textAlign: "center" }} >
+								Заказов нет
+						</div>
+						</Card>
+					</CardGrid> : <div />
+					}
+
 				</Group>}
 			</Panel>
 		);

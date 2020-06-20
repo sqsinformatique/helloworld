@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel, PanelHeader, PanelHeaderButton} from '@vkontakte/vkui';
+import { Panel, PanelHeader, PanelHeaderButton, Group, Cell, Switch } from '@vkontakte/vkui';
 import { platform, IOS } from '@vkontakte/vkui';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
@@ -22,13 +22,18 @@ class ClientOptions extends React.Component {
         return (
             <Panel id={props.id}>
                 <PanelHeader
-                left={<PanelHeaderButton onClick={props.go} data-to="home">
-                    {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
-                </PanelHeaderButton>}
+                    left={<PanelHeaderButton onClick={props.go} data-to="home">
+                        {osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
+                    </PanelHeaderButton>}
                 >
                     Клиент: настройки
 				</PanelHeader>
-             </Panel>
+                <Group>
+                    <Cell asideContent={<Switch />}>
+                        Разрешить уведомления
+                </Cell>
+                </Group>
+            </Panel>
         );
     }
 }

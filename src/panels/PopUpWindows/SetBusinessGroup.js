@@ -15,7 +15,7 @@ class SetBusinessGroup extends React.Component {
 
     async loadGroups() {
         const props = this.props
-        const token = await bridge.send("VKWebAppGetAuthToken", { "app_id": 7500440, "scope": "groups" });
+        const token = await bridge.send("VKWebAppGetAuthToken", { "app_id": 7516660, "scope": "groups" });
         console.log(token)
         const groupsData = await bridge.send("VKWebAppCallAPIMethod", {
             "method": "groups.get",

@@ -6,7 +6,7 @@ import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader
 import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton/PanelHeaderButton';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
-import { RichCell, Button, Avatar, PanelSpinner } from '@vkontakte/vkui';
+import { RichCell, Button, Avatar, PanelSpinner, CardGrid, Card } from '@vkontakte/vkui';
 import Header from '@vkontakte/vkui/dist/components/Header/Header';
 import Group from '@vkontakte/vkui/dist/components/Group/Group';
 
@@ -22,12 +22,12 @@ class Business extends React.Component {
 		super(props);
 
 		this.state = {
-			fetchedUser:  props.fetchedUser,
+			fetchedUser: props.fetchedUser,
 			user: props.user,
 			orders: null,
 		};
 	}
-	
+
 	async componentDidMount() {
 		await this.getBusiness()
 		await this.getBusinessOrders()
@@ -65,12 +65,12 @@ class Business extends React.Component {
 					Бизнес: заказы у курьеров
 				</PanelHeader>
 				{/* header={<Header>У курьера</Header>} */}
-				{!this.state.orders ? <PanelSpinner size='large' /> :  <Group > 
+				{!this.state.orders ? <PanelSpinner size='large' /> : <Group >
 					{this.state.orders && this.state.orders.map((order) =>
 						<RichCell key={order.order_number}
 							disabled
 							multiline
-							before={<Avatar size={72} src={order.curier_photo_100}/>} // src={getAvatarUrl('user_ti')}
+							before={<Avatar size={72} src={order.curier_photo_100} />} // src={getAvatarUrl('user_ti')}
 							text={"Курьер " + order.curier_name}
 							caption={fullOrderDate(order)}
 							after={orderStateToString(order.order_state)}
@@ -85,6 +85,15 @@ class Business extends React.Component {
 						</RichCell>
 					)
 					}
+					{(this.state.orders && this.state.orders.length === 0) ? <CardGrid>
+						<Card size="l">
+							<div style={{ height: 96, fontSize: 30, textAlign: "center" }} >
+								Заказов нет
+						</div>
+						</Card>
+					</CardGrid> : <div />
+					}
+
 				</Group>}
 			</Panel>
 		);
