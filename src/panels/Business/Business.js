@@ -62,7 +62,7 @@ class Business extends React.Component {
 						{osName === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
 					</PanelHeaderButton>}
 				>
-					Бизнес: заказы у курьеров
+					Бизнес: заказы
 				</PanelHeader>
 				{/* header={<Header>У курьера</Header>} */}
 				{!this.state.orders ? <PanelSpinner size='large' /> : <Group >

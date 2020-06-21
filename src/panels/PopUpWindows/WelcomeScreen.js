@@ -61,7 +61,7 @@ class WelcomeScreen extends React.Component {
 
     closePopout = () => {
         const props = this.props;
-        props.closePopout(false,)
+        props.closePopout(false)
     }
 
     render() {

@@ -14,6 +14,10 @@ import './Сourier.css';
 
 const osName = platform();
 
+const blueBackground = {
+    backgroundColor: 'var(--accent)'
+};
+
 class Сourier extends React.Component {
 	constructor(props) {
 		super(props);
@@ -50,6 +54,11 @@ class Сourier extends React.Component {
 		}
 	}
 
+	update =() => {
+		this.getCourierOrders()
+		console.log("cool", this.state.orders)
+	}
+
 	render() {
 		const props = this.props;
 		return (
@@ -73,11 +82,11 @@ class Сourier extends React.Component {
 							before={<Avatar size={72} src={order.photo_100} />} // src={getAvatarUrl('user_ti')}
 							text={order.business_name}
 							caption={fullOrderDate(order)}
-							after={<Button backgroundColor="green">{orderStateToString(order.order_state)}</Button>}
+							after={<Button onClick={(e) => props.go(e, order, this.update)} data-to="set_order_state" style={blueBackground}>{orderStateToString(order.order_state)}</Button>}
 							actions={
 								<React.Fragment>
 									<Button onClick={(e) => props.go(e, order)} data-to="view_where_client">Адрес на карте</Button>
-									<Button>Чат с клиентом</Button>
+									<Button onClick={(e) => props.go(e, order)} data-to="chat_with_client">Чат с клиентом</Button>
 								</React.Fragment>
 							}
 						>

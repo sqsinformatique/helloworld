@@ -1,4 +1,5 @@
 import { isValidPhone, trim } from './utils'
+import { func } from 'prop-types';
 
 const back_url = 'https://sqsinformatique-vk-back.ngrok.io'
 
@@ -38,7 +39,7 @@ export async function getCourierBySocialID(social_id) {
 	}
 }
 
-export async function getCourierGeodataByCourierID (courier_id) {
+export async function getCourierGeodataByCourierID(courier_id) {
 	let url = back_url + '/api/v1/curiers/geo/'
 	let response = await fetch(url + courier_id);
 	if (response.ok) { // если HTTP-статус в диапазоне 200-299
@@ -49,7 +50,81 @@ export async function getCourierGeodataByCourierID (courier_id) {
 
 }
 
+export async function putUpdateCourierOptions(courier_id, options) {
+	let url = back_url + '/api/v1/curiers/options/'
+	let response = await fetch(url + courier_id, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json;charset=utf-8'
+		},
+		body: JSON.stringify(options)
+	});
+	if (response.ok) { // если HTTP-статус в диапазоне 200-299
+		let json = await response.json();
+		console.log("putUpdateCourierOptions", json)
+		return json.result
+	}
+}
+
+export async function getCourierOptionsByID(social_id) {
+	let url = back_url + '/api/v1/curiers/options/'
+
+	let response = await fetch(url + social_id);
+	if (response.ok) { // если HTTP-статус в диапазоне 200-299
+		let json = await response.json();
+		console.log("getCourierOptionsByID", json)
+		return json.result
+	}
+}
+
 // Заказы
+export async function getMessages(chat_id) {
+	let url = back_url + '/api/v1/curiers/messages/'
+
+	let response = await fetch(url + chat_id);
+	if (response.ok) { // если HTTP-статус в диапазоне 200-299
+		let json = await response.json();
+		console.log("getMessages", json)
+		return json.result.chat
+	}
+}
+
+export async function postMessages(chat_id, sender, message) {
+	var date = Date.now();
+	let messageData = {
+		timestamp: date,
+		sender: sender,
+		message: message,
+	};
+	console.log("messageData", messageData)
+
+	let url = back_url + '/api/v1/curiers/messages/'
+	let response = await fetch(url+chat_id, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json;charset=utf-8'
+		},
+		body: JSON.stringify(messageData)
+	});
+	if (response.ok) { // если HTTP-статус в диапазоне 200-299
+		// получаем тело ответа
+		let json = response.json();
+		console.log("postMessages", json)
+		return json
+	}
+}
+
+export async function getClientByOrderID(order_id) {
+	let url = back_url + '/api/v1/orders/client/'
+
+	let response = await fetch(url + order_id);
+	if (response.ok) { // если HTTP-статус в диапазоне 200-299
+		let json = await response.json();
+		console.log("getClientByOrderID", json)
+		return json.result
+	}
+}
+
 export async function postSearchOrdersByClientHashPhone(hash_phone) {
 	let requestOrder = [
 		{
@@ -127,8 +202,8 @@ export async function postCreateOrder(business_id, order) {
 		business_id: business_id,
 		curier_id: Number(order.curier_id),
 		email: order.email,
-		telephone: order.phone,
-		order_number: trim(order.order_number, '+'),
+		telephone: trim(order.phone, '+'),
+		order_number: order.order_number,
 		order_address: order.address,
 		order_description: order.description,
 		order_date: new Date(Date.parse(order.order_date)).toJSON(),
@@ -150,6 +225,27 @@ export async function postCreateOrder(business_id, order) {
 		// получаем тело ответа
 		let json = response.json();
 		console.log("postCreateOrder", json)
+		return json.result
+	}
+}
+
+export async function putUpdateOrderState(order_id, newState) {
+	let url = back_url + '/api/v1/orders/'
+
+	let createOrderRequest = {
+		order_state: newState
+	}
+
+	let response = await fetch(url + order_id, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json;charset=utf-8'
+		},
+		body: JSON.stringify(createOrderRequest)
+	});
+	if (response.ok) { // если HTTP-статус в диапазоне 200-299
+		let json = await response.json();
+		console.log("putUpdateCourierOptions", json)
 		return json.result
 	}
 }

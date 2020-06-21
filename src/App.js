@@ -27,15 +27,20 @@ import Home from './panels/Home';
 import WelcomeScreen from './panels/PopUpWindows/WelcomeScreen';
 import SetBusinessGroup from './panels/PopUpWindows/SetBusinessGroup'
 
+// Смена состояния заказа
+import SetOrderState from './panels/PopUpWindows/SetOrderState'
+
 // Клиент
 import Client from './panels/Client/Client';
 import ClientOptions from './panels/Client/ClientOptions';
 import CourierGeodataForClient from './panels/Client/CourierGeodataForClient';
+import ChatWithCourier from './panels/Client/ChatWithCourier'
 
 // Курьер
 import Сourier from './panels/Courier/Сourier';
-import СourierOptions from './panels/Courier/CourierOptions';
+import CourierOptions from './panels/Courier/CourierOptions';
 import ClientGeodataForCourier from './panels/Courier/ClientGeodataForCourier';
+import ChatWithClient from './panels/Courier/ChatWithClient'
 
 // Бизнес
 import Business from './panels/Business/Business';
@@ -62,6 +67,7 @@ class App extends React.Component {
 			user: null,
 			courier_geodata: { lat: 55.659200, long: 37.753314 },
 			show_user_menu: 'none',
+			invertor: false,
 		};
 
 		this.onStoryChange = this.onStoryChange.bind(this);
@@ -141,7 +147,7 @@ class App extends React.Component {
 	closePopout = (result, userType) => {
 		console.log(result)
 		if (!result) {
-			this.setState({ popout: null, show_user_menu: 'none',  activePanel: 'home' });
+			this.setState({ popout: null, show_user_menu: 'none', activePanel: 'home' });
 		} else {
 			if (userType === 'business') {
 				this.setState({ popout: <SetBusinessGroup userType={userType} fetchedUser={this.state.fetchedUser} closePopout={this.closePopout} /> })
@@ -149,10 +155,18 @@ class App extends React.Component {
 				this.setState({ popout: null });
 			}
 		}
+
+		this.setState({ user: this.state.user })
 	}
-	
-	go = (e, object) => {
+
+
+	go = (e, object, update) => {
 		const route = e.currentTarget.dataset.to;
+
+		if (route === 'set_order_state') {
+			this.setState({ popout: <SetOrderState order={object} fetchedUser={this.state.fetchedUser} closePopout={this.closePopout} update={update} /> })
+			return
+		}
 
 		// Вывод предупреждения для нового пользователя
 		this.fetchUser(route)
@@ -164,12 +178,18 @@ class App extends React.Component {
 		if (route === 'view_where_client') {
 			this.setState({ courier_order: object })
 		}
+		if (route === 'chat_with_client') {
+			this.setState({ courier_order: object })
+		}
+		if (route === 'chat_with_courier') {
+			this.setState({ client_order: object })
+		}
 		if (route === 'view_where_courier_for_business') {
 			this.setState({ client_order_for_business: object })
 		}
 
-		if (route === 'home'){
-			this.setState({show_user_menu: 'none'})
+		if (route === 'home') {
+			this.setState({ show_user_menu: 'none' })
 		}
 
 		this.setState({ activePanel: route })
@@ -206,6 +226,7 @@ class App extends React.Component {
 					< View id='client_orders_ondelivery' activePanel={this.state.activePanel} popout={this.state.popout}>
 						<Client id='client_orders_ondelivery' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 						<CourierGeodataForClient id='view_where_courier' order={this.state.client_order} go={this.go} />
+						<ChatWithCourier id='chat_with_courier' order={this.state.client_order} go={this.go} />
 					</View >
 					< View id='client_options' activePanel='client_options' >
 						<ClientOptions id='client_options' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
@@ -229,11 +250,12 @@ class App extends React.Component {
 						><Icon28SettingsOutline /></TabbarItem>
 					</Tabbar >}>
 					<View id='client_orders_ondelivery' activePanel={this.state.activePanel} popout={this.state.popout}>
-						<Сourier id='client_orders_ondelivery' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
+						<Сourier id='client_orders_ondelivery' invertor={this.state.invertor} user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 						<ClientGeodataForCourier id='view_where_client' order={this.state.courier_order} courier_geodata={this.state.courier_geodata} go={this.go} />
+						<ChatWithClient id='chat_with_client' order={this.state.courier_order} courier_geodata={this.state.courier_geodata} go={this.go}></ChatWithClient>
 					</View>
 					< View id='courier_options' activePanel='courier_options' >
-						<ClientOptions id='courier_options' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
+						<CourierOptions id='courier_options' user={this.state.user} fetchedUser={this.state.fetchedUser} go={this.go} />
 					</View >
 				</Epic >
 				break;
@@ -293,13 +315,13 @@ class App extends React.Component {
 						</Group>
 						<Group title="Выбор кабинета пользователя">
 							<Div>
-								<Button before={<Icon28UserOutline/>} size="xl" onClick={(e) => this.onClick(e, 'client','client_orders_ondelivery')}>Я клиент</Button>
+								<Button before={<Icon28UserOutline />} size="xl" onClick={(e) => this.onClick(e, 'client', 'client_orders_ondelivery')}>Я клиент</Button>
 							</Div>
 							<Div>
-								<Button before={<Icon28MarketOutline/>} size="xl" onClick={(e) => this.onClick(e, 'courier','client_orders_ondelivery')} >Я курьер</Button>
+								<Button before={<Icon28MarketOutline />} size="xl" onClick={(e) => this.onClick(e, 'courier', 'client_orders_ondelivery')} >Я курьер</Button>
 							</Div>
 							<Div>
-								<Button before={<Icon28CubeBoxOutline/>} size="xl" onClick={(e) => this.onClick(e, 'business','client_orders_ondelivery')} >Я бизнес</Button>
+								<Button before={<Icon28CubeBoxOutline />} size="xl" onClick={(e) => this.onClick(e, 'business', 'client_orders_ondelivery')} >Я бизнес</Button>
 							</Div>
 						</Group>
 					</Panel>

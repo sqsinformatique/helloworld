@@ -4,7 +4,7 @@ import { YMaps, Map, RoutePanel } from 'react-yandex-maps';
 const apiKey = '482da132-c4be-476f-95ef-79ba61d579a4'
 const mapState = { center: [55.751574, 37.573856], zoom: 9, controls: ['zoomControl'] };
 
-export function geoMap(clientGeodata, courierGeodata) {
+export function geoMap(clientGeodata, courierGeodata, routingMode) {
     var client
     var courier
     if (typeof clientGeodata === 'object') {
@@ -30,7 +30,7 @@ export function geoMap(clientGeodata, courierGeodata) {
                     if (ref) {
                         ref.routePanel.state.set({
                             fromEnabled: false,
-                            type: 'masstransit',
+                            type: routingMode,
                             from: courier,
                             to: client,
                             toEnabled: false,

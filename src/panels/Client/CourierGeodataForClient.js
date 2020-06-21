@@ -70,7 +70,7 @@ class CourierGeodataForClient extends React.Component {
                 >
                     {order.order_number}
                 </RichCell>
-                {geoMap(order.order_address, this.state.courier_geodata)}
+                {geoMap(order.order_address, this.state.courier_geodata, order.routing_mode)}
             </Panel>
         )
     }

@@ -2,6 +2,10 @@ export function orderStateToString(state) {
     switch (state) {
         case 'to_delivery':
             return 'В доставке'
+        case 'accepted':
+            return 'Получен'
+        case 'canceled':
+            return "Отменён"
         default:
             return 'Не известное состояние'
     }
