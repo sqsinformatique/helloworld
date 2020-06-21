@@ -90,8 +90,18 @@ class ChatWithCourier extends React.Component {
                     </PanelHeaderButton>}
                 // right={miniPanel}
                 >
-                     Чат с курьером по заказу {order.order_number}
+                     Чат с курьером
                 </PanelHeader>
+                <RichCell
+                    key={order.order_number}
+                    disabled
+                    multiline
+                    before={<Avatar size={72} src={order.curier_photo_100} />} // src={getAvatarUrl('user_ti')}
+                    text={'Заказ: ' + order.order_number}
+                    caption={fullOrderDate(order)}
+                    after={orderStateToString(order.order_state)}
+                >
+                </RichCell>
                 <FormLayout>
                     <Textarea value={msg}
                         onChange={this.onChange}

@@ -98,14 +98,14 @@ class ChatWithClient extends React.Component {
                 // right={miniPanel}
                 >
                     {/* {order.shop} */}
-                    Чат с клиентом по заказу {order.order_number}
+                    Чат с клиентом
                 </PanelHeader>
                 <RichCell
                     key={order.order_number}
                     disabled
                     multiline
                     before={<Avatar size={72} src={order.photo_100} />} // src={getAvatarUrl('user_ti')}
-                    text=''
+                    text={'Заказ: ' + order.order_number}
                     caption={fullOrderDate(order)}
                     after={orderStateToString(order.order_state)}
                 >
