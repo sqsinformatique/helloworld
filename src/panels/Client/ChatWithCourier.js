@@ -7,6 +7,7 @@ import PanelHeaderButton from '@vkontakte/vkui/dist/components/PanelHeaderButton
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 
+import { orderStateToString, fullOrderDate } from '../../modules/parseTypes'
 import { getClientByOrderID, postMessages, getMessages } from '../../modules/backRequests'
 
 const osName = platform();
